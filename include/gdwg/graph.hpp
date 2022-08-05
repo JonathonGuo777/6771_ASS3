@@ -58,8 +58,8 @@ namespace gdwg {
 
 		// Move Constructor
 		graph(graph&& other) noexcept
-		: nodes_{std::exchange(other.nodes_, std::set<std::shared_ptr<N>, node_comparator>())}
-		, edges_{std::exchange(other.edges_, std::set<std::shared_ptr<edge>, edge_comparator>())} {}
+		: nodes_{std::exchange(other.nodes_, std::set<std::shared_ptr<N>, node_cmp>())}
+		, edges_{std::exchange(other.edges_, std::set<std::shared_ptr<edge>, edge_cmp>())} {}
 
 		// Copy Assignment
 		auto operator=(graph const& other) -> graph& {
@@ -197,15 +197,21 @@ namespace gdwg {
 			throw std::runtime_error("Cannot call gdwg::graph<N, E>::erase_edge on src or dst if they "
 			                         "don't exist in the graph");
 		}
-
+		
+		// to be improved
 		/* Remove an edge pointed by i, return iterator of element after i. Constant */
 		auto erase_edge(iterator i) -> iterator {
-			return iterator{edges_.erase(i.it_)};
-		}
+			// Check if exist
+			if (i == end() or i == iterator{}) {
+				return end();
+			}
 
+			return iterator{edges_.erase(i.iter_)};
+		}
+		// to be improved
 		/* Erase [i, s) */
 		auto erase_edge(iterator i, iterator s) -> iterator {
-			return iterator{edges_.erase(i.it_, s.it_)};
+			return iterator{edges_.erase(i.iter_, s.iter_)};
 		}
 
 		/* Erase all nodes */
@@ -216,7 +222,10 @@ namespace gdwg {
 
 		// Accessors
 		[[nodiscard]] auto is_node(N const& value) const -> bool {
-			return nodes_.find(value) != nodes_.end();
+			if (nodes_.find(value) == nodes_.end()) {
+				return false;
+			}
+			return true;
 		}
 
 		[[nodiscard]] auto empty() const -> bool {
@@ -311,7 +320,7 @@ namespace gdwg {
 		}
 
 	private:
-		struct node_comparator {
+		struct node_cmp {
 			using is_transparent = std::true_type;
 
 			auto operator()(std::shared_ptr<N> const& lhs, std::shared_ptr<N> const& rhs) const -> bool {
@@ -327,7 +336,7 @@ namespace gdwg {
 			}
 		};
 
-		struct edge_comparator {
+		struct edge_cmp {
 			using is_transparent = std::true_type;
 
 			auto operator()(std::shared_ptr<edge> const& lhs, std::shared_ptr<edge> const& rhs) const
@@ -361,8 +370,8 @@ namespace gdwg {
 			}
 		};
 
-		std::set<std::shared_ptr<N>, node_comparator> nodes_;
-		std::set<std::shared_ptr<edge>, edge_comparator> edges_;
+		std::set<std::shared_ptr<N>, node_cmp> nodes_;
+		std::set<std::shared_ptr<edge>, edge_cmp> edges_;
 
 		/* Swap two graph */
 		static auto swap(graph<N, E>& first, graph<N, E>& second) noexcept {
@@ -405,12 +414,12 @@ namespace gdwg {
 
 			// Iterator source
 			auto operator*() const -> reference {
-				return value_type{*((*it_)->src), *((*it_)->dst), (*it_)->weight};
+				return value_type{*((*iter_)->src), *((*iter_)->dst), (*iter_)->weight};
 			}
 
 			// Iterator traversal
 			auto operator++() -> iterator& {
-				++it_;
+				++iter_;
 				return *this;
 			}
 
@@ -421,7 +430,7 @@ namespace gdwg {
 			}
 
 			auto operator--() -> iterator& {
-				--it_;
+				--iter_;
 				return *this;
 			}
 
@@ -433,16 +442,16 @@ namespace gdwg {
 
 			// Iterator comparison
 			auto operator==(iterator const& other) const -> bool {
-				return it_ == other.it_;
+				return iter_ == other.iter_;
 			}
 
 		private:
-			using edges_iterator = typename std::set<std::shared_ptr<edge>, edge_comparator>::iterator;
+			using edges_iterator = typename std::set<std::shared_ptr<edge>, edge_cmp>::iterator;
 
-			edges_iterator it_;
+			edges_iterator iter_;
 
 			explicit iterator(edges_iterator begin)
-			: it_{begin} {}
+			: iter_{begin} {}
 
 			friend class graph<N, E>;
 		};
