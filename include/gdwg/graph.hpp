@@ -376,20 +376,18 @@ namespace gdwg {
 
 		// Hidden Friend: Extractor
 		friend auto operator<<(std::ostream& os, graph const& g) -> std::ostream& {
-			auto oss = std::ostringstream{};
+			auto os = std::ostringstream{};
 
 //			std::for_each(g.nodes_.begin(), g.nodes_.end(), [&](auto const& node_it) 
 			for (auto const& node_it : g.nodes_)   {
-				oss << *node_it << " (\n";
+				os << *node_it << " (\n";
 				for (auto const& edge_it : g.edges_) {
 					if (*(edge_it->src) == *node_it) {
-						oss << "  " << *(edge_it->dst) << " | " << edge_it->weight << "\n";
+						os << "  " << *(edge_it->dst) << " | " << edge_it->weight << "\n";
 					}
 				}
-				oss << ")\n";
+				os << ")\n";
 			}
-		   
-			os << oss.str();
 
 			return os;
 		}
