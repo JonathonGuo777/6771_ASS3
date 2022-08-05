@@ -376,7 +376,7 @@ namespace gdwg {
 
 		// Hidden Friend: Extractor
 		friend auto operator<<(std::ostream& os, graph const& g) -> std::ostream& {
-			auto os = std::ostringstream{};
+//			auto os = std::ostringstream{};
 
 //			std::for_each(g.nodes_.begin(), g.nodes_.end(), [&](auto const& node_it) 
 			for (auto const& node_it : g.nodes_)   {
