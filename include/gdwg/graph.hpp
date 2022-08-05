@@ -35,20 +35,19 @@ namespace gdwg {
 		// Constructors
 		graph() noexcept = default;
 
-		graph(std::initializer_list<N> il)
-		: graph(il.begin(), il.end()) {}
+		graph(std::initializer_list<N> il){
+			*this = graph(il.begin(), il.end());
+		}
 
 		template<typename InputIt>
-		graph(InputIt first, InputIt last)
-		{
+		graph(InputIt first, InputIt last){
 			for (auto& it = first; it != last; ++it) {
 				nodes_.emplace(std::make_shared<N>(*it));
 			}
 		}
 
 		// Copy Constructor
-		graph(graph const& other)
-		{
+		graph(graph const& other){
 			std::transform(other.nodes_.begin(),
 			               other.nodes_.end(),
 			               std::inserter(nodes_, nodes_.end()),
