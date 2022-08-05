@@ -185,16 +185,18 @@ namespace gdwg {
 
 		/* Erase node: log(n) + e */
 		auto erase_edge(N const& src, N const& dst, E const& weight) -> bool {
-			if (not is_node(src) or not is_node(dst)) { // 2log(n)
-				throw std::runtime_error("Cannot call gdwg::graph<N, E>::erase_edge on src or dst if "
-				                         "they don't exist in the graph");
+			if (is_node(src) and is_node(dst)){
+				auto it = std::find_if(edges_.begin(), edges_.end(),
+				                       [&](auto const& ed) { return *(ed->src) == src and *(ed->dst) == dst and ed->weight == weight; });
+				if (it != edges_.end()) {
+					edges_.erase(it);
+					return true;
+				}
+				return false;
+
 			}
-
-			auto count = std::erase_if(edges_, [&](auto const& e_ptr) { // e
-				return *(e_ptr->src) == src and *(e_ptr->dst) == dst and e_ptr->weight == weight;
-			});
-
-			return count > 0;
+			throw std::runtime_error("Cannot call gdwg::graph<N, E>::erase_edge on src or dst if they "
+			                         "don't exist in the graph");
 		}
 
 		/* Remove an edge pointed by i, return iterator of element after i. Constant */
