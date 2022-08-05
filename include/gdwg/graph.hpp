@@ -301,19 +301,13 @@ namespace gdwg {
 
 		// Comparision
 		[[nodiscard]] auto operator==(graph const& other) const -> bool {
-			return std::equal(nodes_.begin(),
-			                  nodes_.end(),
-			                  other.nodes_.begin(),
-			                  other.nodes_.end(),
-			                  [](auto const& lhs, auto const& rhs) { return *lhs == *rhs; })
-			       and std::equal(edges_.begin(),
-			                      edges_.end(),
-			                      other.edges_.begin(),
-			                      other.edges_.end(),
-			                      [](auto const& lhs, auto const& rhs) {
-				                      return *(lhs->src) == *(rhs->src) and *(lhs->dst) == *(rhs->dst)
-				                             and lhs->weight == rhs->weight;
-			                      });
+			if (other.nodes_.size() == nodes_.size() and other.edges_.size() == edges_.size()) {
+				return std::equal(nodes_.begin(), nodes_.end(), other.nodes_.begin(),
+				                  [](auto const& x, auto const& y) { return *x == *y; })
+				       and std::equal(edges_.begin(), edges_.end(), other.edges_.begin(),
+				                      [](auto const& x, auto const& y) { return *x == *y; });
+			}
+			return false;
 		}
 
 	private:
