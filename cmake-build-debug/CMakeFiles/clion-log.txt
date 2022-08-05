@@ -1,0 +1,4 @@
+"/Users/guoao/Library/Application Support/JetBrains/Toolbox/apps/CLion/ch-0/212.5284.51/CLion.app/Contents/bin/cmake/mac/bin/cmake" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=/usr/local/Cellar/gcc/10.2.0/bin/gcc-10 -DCMAKE_CXX_COMPILER=/usr/local/Cellar/gcc/10.2.0/bin/g++-10 -DCMAKE_DEPENDS_USE_COMPILER=FALSE -G "CodeBlocks - Unix Makefiles" /Users/guoao/Desktop/comp6771/ass3/ass3
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug

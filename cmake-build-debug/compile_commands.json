@@ -1,0 +1,42 @@
+[
+{
+  "directory": "/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/source",
+  "command": "/usr/local/Cellar/gcc/10.2.0/bin/g++-10  -I/Users/guoao/Desktop/comp6771/ass3/ass3/include -I/Users/guoao/Desktop/comp6771/ass3/ass3/source -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX11.0.sdk -std=c++2a -o CMakeFiles/client.dir/client.cpp.o -c /Users/guoao/Desktop/comp6771/ass3/ass3/source/client.cpp",
+  "file": "/Users/guoao/Desktop/comp6771/ass3/ass3/source/client.cpp"
+},
+{
+  "directory": "/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test",
+  "command": "/usr/local/Cellar/gcc/10.2.0/bin/g++-10  -I/Users/guoao/Desktop/comp6771/ass3/ass3/include -I/Users/guoao/Desktop/comp6771/ass3/ass3/test -I/Users/guoao/Desktop/comp6771/ass3/ass3/test/. -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX11.0.sdk -std=c++2a -o CMakeFiles/test_main.dir/test_main.cpp.o -c /Users/guoao/Desktop/comp6771/ass3/ass3/test/test_main.cpp",
+  "file": "/Users/guoao/Desktop/comp6771/ass3/ass3/test/test_main.cpp"
+},
+{
+  "directory": "/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph",
+  "command": "/usr/local/Cellar/gcc/10.2.0/bin/g++-10  -I/Users/guoao/Desktop/comp6771/ass3/ass3/include -I/Users/guoao/Desktop/comp6771/ass3/ass3/test/graph -I/Users/guoao/Desktop/comp6771/ass3/ass3/test/. -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX11.0.sdk -Wno-error -Wno-self-assign-overloaded -std=c++2a -o CMakeFiles/graph_other_test.dir/graph_other_test.cpp.o -c /Users/guoao/Desktop/comp6771/ass3/ass3/test/graph/graph_other_test.cpp",
+  "file": "/Users/guoao/Desktop/comp6771/ass3/ass3/test/graph/graph_other_test.cpp"
+},
+{
+  "directory": "/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph",
+  "command": "/usr/local/Cellar/gcc/10.2.0/bin/g++-10  -I/Users/guoao/Desktop/comp6771/ass3/ass3/include -I/Users/guoao/Desktop/comp6771/ass3/ass3/test/graph -I/Users/guoao/Desktop/comp6771/ass3/ass3/test/. -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX11.0.sdk -Wno-error -Wno-self-assign-overloaded -std=c++2a -o CMakeFiles/graph_constructors_test.dir/graph_constructors_test.cpp.o -c /Users/guoao/Desktop/comp6771/ass3/ass3/test/graph/graph_constructors_test.cpp",
+  "file": "/Users/guoao/Desktop/comp6771/ass3/ass3/test/graph/graph_constructors_test.cpp"
+},
+{
+  "directory": "/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph",
+  "command": "/usr/local/Cellar/gcc/10.2.0/bin/g++-10  -I/Users/guoao/Desktop/comp6771/ass3/ass3/include -I/Users/guoao/Desktop/comp6771/ass3/ass3/test/graph -I/Users/guoao/Desktop/comp6771/ass3/ass3/test/. -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX11.0.sdk -Wno-error -Wno-self-assign-overloaded -std=c++2a -o CMakeFiles/graph_accessors_test.dir/graph_accessors_test.cpp.o -c /Users/guoao/Desktop/comp6771/ass3/ass3/test/graph/graph_accessors_test.cpp",
+  "file": "/Users/guoao/Desktop/comp6771/ass3/ass3/test/graph/graph_accessors_test.cpp"
+},
+{
+  "directory": "/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph",
+  "command": "/usr/local/Cellar/gcc/10.2.0/bin/g++-10  -I/Users/guoao/Desktop/comp6771/ass3/ass3/include -I/Users/guoao/Desktop/comp6771/ass3/ass3/test/graph -I/Users/guoao/Desktop/comp6771/ass3/ass3/test/. -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX11.0.sdk -Wno-error -Wno-self-assign-overloaded -std=c++2a -o CMakeFiles/graph_modifiers_test.dir/graph_modifiers_test.cpp.o -c /Users/guoao/Desktop/comp6771/ass3/ass3/test/graph/graph_modifiers_test.cpp",
+  "file": "/Users/guoao/Desktop/comp6771/ass3/ass3/test/graph/graph_modifiers_test.cpp"
+},
+{
+  "directory": "/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph",
+  "command": "/usr/local/Cellar/gcc/10.2.0/bin/g++-10  -I/Users/guoao/Desktop/comp6771/ass3/ass3/include -I/Users/guoao/Desktop/comp6771/ass3/ass3/test/graph -I/Users/guoao/Desktop/comp6771/ass3/ass3/test/. -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX11.0.sdk -Wno-error -Wno-self-assign-overloaded -std=c++2a -o CMakeFiles/graph_iterator_test.dir/graph_iterator_test.cpp.o -c /Users/guoao/Desktop/comp6771/ass3/ass3/test/graph/graph_iterator_test.cpp",
+  "file": "/Users/guoao/Desktop/comp6771/ass3/ass3/test/graph/graph_iterator_test.cpp"
+},
+{
+  "directory": "/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph",
+  "command": "/usr/local/Cellar/gcc/10.2.0/bin/g++-10  -I/Users/guoao/Desktop/comp6771/ass3/ass3/include -I/Users/guoao/Desktop/comp6771/ass3/ass3/test/graph -I/Users/guoao/Desktop/comp6771/ass3/ass3/test/. -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX11.0.sdk -Wno-error -Wno-self-assign-overloaded -std=c++2a -o CMakeFiles/graph_test1.dir/graph_test1.cpp.o -c /Users/guoao/Desktop/comp6771/ass3/ass3/test/graph/graph_test1.cpp",
+  "file": "/Users/guoao/Desktop/comp6771/ass3/ass3/test/graph/graph_test1.cpp"
+}
+]
