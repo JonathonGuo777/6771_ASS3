@@ -305,7 +305,10 @@ namespace gdwg {
 				return std::equal(nodes_.begin(), nodes_.end(), other.nodes_.begin(),
 				                  [](auto const& x, auto const& y) { return *x == *y; })
 				       and std::equal(edges_.begin(), edges_.end(), other.edges_.begin(),
-				                      [](auto const& x, auto const& y) { return *x == *y; });
+				                      [](auto const& x, auto const& y) {
+					                      return *(x->src) == *(y->src)
+					                         and *(x->dst) == *(y->dst)
+					                         and x->weight== y->weight; });
 			}
 			return false;
 		}
