@@ -118,18 +118,18 @@ namespace gdwg {
 			std::copy_if(edges_.begin(),
 			             edges_.end(),
 			             std::back_inserter(edge_ptrs),
-			             [&](auto const& e_ptr) {
-				             return *(e_ptr->src) == old_data or *(e_ptr->dst) == old_data;
+			             [&](auto const& edge_it) {
+				             return *(edge_it->src) == old_data or *(edge_it->dst) == old_data;
 			             });
 
 			// Replace the nodes
-			for (auto const& e_ptr : edge_ptrs) {
-				auto new_src_ptr = *(e_ptr->src) == old_data ? new_node.get() : e_ptr->src;
-				auto new_dst_ptr = *(e_ptr->dst) == old_data ? new_node.get() : e_ptr->dst;
+			for (auto const& edge_it : edge_ptrs) {
+				auto new_src_ptr = *(edge_it->src) == old_data ? new_node.get() : edge_it->src;
+				auto new_dst_ptr = *(edge_it->dst) == old_data ? new_node.get() : edge_it->dst;
 
 				// Insert new and remove old
-				edges_.emplace(std::make_shared<edge>(edge{new_src_ptr, new_dst_ptr, e_ptr->weight}));
-				edges_.erase(e_ptr);
+				edges_.emplace(std::make_shared<edge>(edge{new_src_ptr, new_dst_ptr, edge_it->weight}));
+				edges_.erase(edge_it);
 			}
 
 			// Erase the old node
@@ -151,17 +151,17 @@ namespace gdwg {
 			std::copy_if(edges_.begin(),
 			             edges_.end(),
 			             std::back_inserter(edge_ptrs),
-			             [&](auto const& e_ptr) {
-				             return *(e_ptr->src) == old_data or *(e_ptr->dst) == old_data;
+			             [&](auto const& edge_it) {
+				             return *(edge_it->src) == old_data or *(edge_it->dst) == old_data;
 			             });
 
 			// Merge the nodes
-			for (auto const& e_ptr : edge_ptrs) {
-				auto new_src_ptr = *(e_ptr->src) == old_data ? (*new_it).get() : e_ptr->src;
-				auto new_dst_ptr = *(e_ptr->dst) == old_data ? (*new_it).get() : e_ptr->dst;
+			for (auto const& edge_it : edge_ptrs) {
+				auto new_src_ptr = *(edge_it->src) == old_data ? (*new_it).get() : edge_it->src;
+				auto new_dst_ptr = *(edge_it->dst) == old_data ? (*new_it).get() : edge_it->dst;
 
-				struct edge new_edge = edge{new_src_ptr, new_dst_ptr, e_ptr->weight};
-				edges_.erase(e_ptr);
+				struct edge new_edge = edge{new_src_ptr, new_dst_ptr, edge_it->weight};
+				edges_.erase(edge_it);
 
 				// If the new edge not exist, insert it
 				if (edges_.find(new_edge) == edges_.end()) {
@@ -235,23 +235,23 @@ namespace gdwg {
 		}
 
 		[[nodiscard]] auto is_connected(N const& src, N const& dst) const -> bool {
-			if (not is_node(src) or not is_node(dst)) {
-				throw std::runtime_error("Cannot call gdwg::graph<N, E>::is_connected if src or dst "
-				                         "node don't exist in the graph");
-			}
+			if (is_node(src) and is_node(dst)) {
+				auto connection = std::find_if(std::cbegin(edges_),
+				                               std::cend(edges_),
+				                               [src, dst](std::shared_ptr<edge> x) {
+					                               return (*(x->from) == src and *(x->to) == dst);
+				                               });
+				return connection != std::cend(edges_);
 
-			return std::any_of(edges_.begin(), edges_.end(), [&](auto const& e_ptr) {
-				return *(e_ptr->src) == src and *(e_ptr->dst) == dst;
-			});
+			}
+			throw std::runtime_error("Cannot call gdwg::graph<N, E>::is_connected if src or dst node "
+			                         "don't exist in the graph");
 		}
 
 		[[nodiscard]] auto nodes() const -> std::vector<N> {
 			auto v = std::vector<N>{};
-//			std::for_each(nodes_.begin(), nodes_.end(), [&v](auto const& it) {
-//				v.emplace_back(*it);
-//			});
-			for (auto const& it : nodes_){
-				v.emplace_back(*it);
+			for (auto const& node_it : nodes_){
+				v.emplace_back(*node_it);
 			}
 			return v;
 		}
@@ -259,9 +259,9 @@ namespace gdwg {
 		[[nodiscard]] auto weights(N const& src, N const& dst) const -> std::vector<E> {
 			if (is_node(src) and is_node(dst)) {
 				auto v = std::vector<E>{};
-				for (auto const& e_ptr : edges_) {
-					if (*(e_ptr->src) == src and *(e_ptr->dst) == dst) {
-						v.emplace_back(e_ptr->weight);
+				for (auto const& edge_it : edges_) {
+					if (*(edge_it->src) == src and *(edge_it->dst) == dst) {
+						v.emplace_back(edge_it->weight);
 					}
 				}
 				return v;
@@ -283,9 +283,9 @@ namespace gdwg {
 			}
 
 			auto dsts = std::vector<N>();
-			for (auto const& e_ptr : edges_) { // e
-				if (*(e_ptr->src) == src) {
-					dsts.push_back(*(e_ptr->dst));
+			for (auto const& edge_it : edges_) { // e
+				if (*(edge_it->src) == src) {
+					dsts.push_back(*(edge_it->dst));
 				}
 			}
 
@@ -385,9 +385,9 @@ namespace gdwg {
 			std::for_each(g.nodes_.begin(), g.nodes_.end(), [&](auto const& n_ptr) {
 				oss << *n_ptr << " (\n";
 
-				for (auto const& e_ptr : g.edges_) {
-					if (*(e_ptr->src) == *n_ptr) {
-						oss << "  " << *(e_ptr->dst) << " | " << e_ptr->weight << "\n";
+				for (auto const& edge_it : g.edges_) {
+					if (*(edge_it->src) == *n_ptr) {
+						oss << "  " << *(edge_it->dst) << " | " << edge_it->weight << "\n";
 					}
 				}
 
