@@ -47,23 +47,31 @@ namespace gdwg {
 		}
 
 		// Copy Constructor
+//		graph(graph const& other){
+//			std::transform(other.nodes_.begin(),
+//			               other.nodes_.end(),
+//			               std::inserter(nodes_, nodes_.end()),
+//			               // Make a copy
+//			               [&](auto const& n_ptr) { return std::make_shared<N>(*n_ptr); });
+//
+//			std::transform(other.edges_.begin(),
+//			               other.edges_.end(),
+//			               std::inserter(edges_, edges_.end()),
+//			               // Find the ptr of the nodes created, avoid duplication
+//			               [&](auto const& e_ptr) {
+//				               struct edge new_edge = edge{(*(nodes_.find(*(e_ptr->src)))).get(),
+//				                                           (*(nodes_.find(*(e_ptr->dst)))).get(),
+//				                                           e_ptr->weight};
+//				               return std::make_shared<edge>(new_edge);
+//			               });
+//		}
 		graph(graph const& other){
-			std::transform(other.nodes_.begin(),
-			               other.nodes_.end(),
-			               std::inserter(nodes_, nodes_.end()),
-			               // Make a copy
-			               [&](auto const& n_ptr) { return std::make_shared<N>(*n_ptr); });
-
-			std::transform(other.edges_.begin(),
-			               other.edges_.end(),
-			               std::inserter(edges_, edges_.end()),
-			               // Find the ptr of the nodes created, avoid duplication
-			               [&](auto const& e_ptr) {
-				               struct edge new_edge = edge{(*(nodes_.find(*(e_ptr->src)))).get(),
-				                                           (*(nodes_.find(*(e_ptr->dst)))).get(),
-				                                           e_ptr->weight};
-				               return std::make_shared<edge>(new_edge);
-			               });
+			for (auto& it : other.nodes_) {
+				nodes_.emplace(std::make_shared<N>(*it));
+			}
+			for (auto& it : other.edges_) {
+				edges_.emplace(std::make_shared<edge>(*it));
+			}
 		}
 
 		// Move Constructor
