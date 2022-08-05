@@ -246,14 +246,11 @@ namespace gdwg {
 		}
 
 		[[nodiscard]] auto nodes() const -> std::vector<N> {
-			auto nodes = std::vector<N>();
-
-			std::transform(nodes_.begin(),
-			               nodes_.end(),
-			               std::back_inserter(nodes),
-			               [](auto const& n_ptr) { return *n_ptr; });
-
-			return nodes;
+			auto v = std::vector<N>{};
+			std::for_each(nodes_.begin(), nodes_.end(), [&v](auto const& it) {
+				v.emplace_back(*it);
+			});
+			return v;
 		}
 
 		[[nodiscard]] auto weights(N const& src, N const& dst) const -> std::vector<E> {
