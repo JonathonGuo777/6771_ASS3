@@ -65,6 +65,16 @@ CMAKE_BINARY_DIR = /Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug
 #=============================================================================
 # Targets provided globally by CMake.
 
+# Special rule for the target rebuild_cache
+rebuild_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
+	"/Users/guoao/Library/Application Support/JetBrains/Toolbox/apps/CLion/ch-0/212.5284.51/CLion.app/Contents/bin/cmake/mac/bin/cmake" --regenerate-during-build -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+.PHONY : rebuild_cache
+
+# Special rule for the target rebuild_cache
+rebuild_cache/fast: rebuild_cache
+.PHONY : rebuild_cache/fast
+
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
@@ -84,16 +94,6 @@ test:
 # Special rule for the target test
 test/fast: test
 .PHONY : test/fast
-
-# Special rule for the target rebuild_cache
-rebuild_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	"/Users/guoao/Library/Application Support/JetBrains/Toolbox/apps/CLion/ch-0/212.5284.51/CLion.app/Contents/bin/cmake/mac/bin/cmake" --regenerate-during-build -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
-.PHONY : rebuild_cache
-
-# Special rule for the target rebuild_cache
-rebuild_cache/fast: rebuild_cache
-.PHONY : rebuild_cache/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -127,34 +127,6 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
-test/graph/CMakeFiles/graph_other_test.dir/rule:
-	cd /Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/graph/CMakeFiles/graph_other_test.dir/rule
-.PHONY : test/graph/CMakeFiles/graph_other_test.dir/rule
-
-# Convenience name for target.
-graph_other_test: test/graph/CMakeFiles/graph_other_test.dir/rule
-.PHONY : graph_other_test
-
-# fast build rule for target.
-graph_other_test/fast:
-	cd /Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug && $(MAKE) $(MAKESILENT) -f test/graph/CMakeFiles/graph_other_test.dir/build.make test/graph/CMakeFiles/graph_other_test.dir/build
-.PHONY : graph_other_test/fast
-
-# Convenience name for target.
-test/graph/CMakeFiles/graph_constructors_test.dir/rule:
-	cd /Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/graph/CMakeFiles/graph_constructors_test.dir/rule
-.PHONY : test/graph/CMakeFiles/graph_constructors_test.dir/rule
-
-# Convenience name for target.
-graph_constructors_test: test/graph/CMakeFiles/graph_constructors_test.dir/rule
-.PHONY : graph_constructors_test
-
-# fast build rule for target.
-graph_constructors_test/fast:
-	cd /Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug && $(MAKE) $(MAKESILENT) -f test/graph/CMakeFiles/graph_constructors_test.dir/build.make test/graph/CMakeFiles/graph_constructors_test.dir/build
-.PHONY : graph_constructors_test/fast
-
-# Convenience name for target.
 test/graph/CMakeFiles/graph_accessors_test.dir/rule:
 	cd /Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/graph/CMakeFiles/graph_accessors_test.dir/rule
 .PHONY : test/graph/CMakeFiles/graph_accessors_test.dir/rule
@@ -167,48 +139,6 @@ graph_accessors_test: test/graph/CMakeFiles/graph_accessors_test.dir/rule
 graph_accessors_test/fast:
 	cd /Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug && $(MAKE) $(MAKESILENT) -f test/graph/CMakeFiles/graph_accessors_test.dir/build.make test/graph/CMakeFiles/graph_accessors_test.dir/build
 .PHONY : graph_accessors_test/fast
-
-# Convenience name for target.
-test/graph/CMakeFiles/graph_modifiers_test.dir/rule:
-	cd /Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/graph/CMakeFiles/graph_modifiers_test.dir/rule
-.PHONY : test/graph/CMakeFiles/graph_modifiers_test.dir/rule
-
-# Convenience name for target.
-graph_modifiers_test: test/graph/CMakeFiles/graph_modifiers_test.dir/rule
-.PHONY : graph_modifiers_test
-
-# fast build rule for target.
-graph_modifiers_test/fast:
-	cd /Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug && $(MAKE) $(MAKESILENT) -f test/graph/CMakeFiles/graph_modifiers_test.dir/build.make test/graph/CMakeFiles/graph_modifiers_test.dir/build
-.PHONY : graph_modifiers_test/fast
-
-# Convenience name for target.
-test/graph/CMakeFiles/graph_iterator_test.dir/rule:
-	cd /Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/graph/CMakeFiles/graph_iterator_test.dir/rule
-.PHONY : test/graph/CMakeFiles/graph_iterator_test.dir/rule
-
-# Convenience name for target.
-graph_iterator_test: test/graph/CMakeFiles/graph_iterator_test.dir/rule
-.PHONY : graph_iterator_test
-
-# fast build rule for target.
-graph_iterator_test/fast:
-	cd /Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug && $(MAKE) $(MAKESILENT) -f test/graph/CMakeFiles/graph_iterator_test.dir/build.make test/graph/CMakeFiles/graph_iterator_test.dir/build
-.PHONY : graph_iterator_test/fast
-
-# Convenience name for target.
-test/graph/CMakeFiles/graph_test1.dir/rule:
-	cd /Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/graph/CMakeFiles/graph_test1.dir/rule
-.PHONY : test/graph/CMakeFiles/graph_test1.dir/rule
-
-# Convenience name for target.
-graph_test1: test/graph/CMakeFiles/graph_test1.dir/rule
-.PHONY : graph_test1
-
-# fast build rule for target.
-graph_test1/fast:
-	cd /Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug && $(MAKE) $(MAKESILENT) -f test/graph/CMakeFiles/graph_test1.dir/build.make test/graph/CMakeFiles/graph_test1.dir/build
-.PHONY : graph_test1/fast
 
 graph_accessors_test.o: graph_accessors_test.cpp.o
 .PHONY : graph_accessors_test.o
@@ -234,126 +164,6 @@ graph_accessors_test.cpp.s:
 	cd /Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug && $(MAKE) $(MAKESILENT) -f test/graph/CMakeFiles/graph_accessors_test.dir/build.make test/graph/CMakeFiles/graph_accessors_test.dir/graph_accessors_test.cpp.s
 .PHONY : graph_accessors_test.cpp.s
 
-graph_constructors_test.o: graph_constructors_test.cpp.o
-.PHONY : graph_constructors_test.o
-
-# target to build an object file
-graph_constructors_test.cpp.o:
-	cd /Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug && $(MAKE) $(MAKESILENT) -f test/graph/CMakeFiles/graph_constructors_test.dir/build.make test/graph/CMakeFiles/graph_constructors_test.dir/graph_constructors_test.cpp.o
-.PHONY : graph_constructors_test.cpp.o
-
-graph_constructors_test.i: graph_constructors_test.cpp.i
-.PHONY : graph_constructors_test.i
-
-# target to preprocess a source file
-graph_constructors_test.cpp.i:
-	cd /Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug && $(MAKE) $(MAKESILENT) -f test/graph/CMakeFiles/graph_constructors_test.dir/build.make test/graph/CMakeFiles/graph_constructors_test.dir/graph_constructors_test.cpp.i
-.PHONY : graph_constructors_test.cpp.i
-
-graph_constructors_test.s: graph_constructors_test.cpp.s
-.PHONY : graph_constructors_test.s
-
-# target to generate assembly for a file
-graph_constructors_test.cpp.s:
-	cd /Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug && $(MAKE) $(MAKESILENT) -f test/graph/CMakeFiles/graph_constructors_test.dir/build.make test/graph/CMakeFiles/graph_constructors_test.dir/graph_constructors_test.cpp.s
-.PHONY : graph_constructors_test.cpp.s
-
-graph_iterator_test.o: graph_iterator_test.cpp.o
-.PHONY : graph_iterator_test.o
-
-# target to build an object file
-graph_iterator_test.cpp.o:
-	cd /Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug && $(MAKE) $(MAKESILENT) -f test/graph/CMakeFiles/graph_iterator_test.dir/build.make test/graph/CMakeFiles/graph_iterator_test.dir/graph_iterator_test.cpp.o
-.PHONY : graph_iterator_test.cpp.o
-
-graph_iterator_test.i: graph_iterator_test.cpp.i
-.PHONY : graph_iterator_test.i
-
-# target to preprocess a source file
-graph_iterator_test.cpp.i:
-	cd /Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug && $(MAKE) $(MAKESILENT) -f test/graph/CMakeFiles/graph_iterator_test.dir/build.make test/graph/CMakeFiles/graph_iterator_test.dir/graph_iterator_test.cpp.i
-.PHONY : graph_iterator_test.cpp.i
-
-graph_iterator_test.s: graph_iterator_test.cpp.s
-.PHONY : graph_iterator_test.s
-
-# target to generate assembly for a file
-graph_iterator_test.cpp.s:
-	cd /Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug && $(MAKE) $(MAKESILENT) -f test/graph/CMakeFiles/graph_iterator_test.dir/build.make test/graph/CMakeFiles/graph_iterator_test.dir/graph_iterator_test.cpp.s
-.PHONY : graph_iterator_test.cpp.s
-
-graph_modifiers_test.o: graph_modifiers_test.cpp.o
-.PHONY : graph_modifiers_test.o
-
-# target to build an object file
-graph_modifiers_test.cpp.o:
-	cd /Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug && $(MAKE) $(MAKESILENT) -f test/graph/CMakeFiles/graph_modifiers_test.dir/build.make test/graph/CMakeFiles/graph_modifiers_test.dir/graph_modifiers_test.cpp.o
-.PHONY : graph_modifiers_test.cpp.o
-
-graph_modifiers_test.i: graph_modifiers_test.cpp.i
-.PHONY : graph_modifiers_test.i
-
-# target to preprocess a source file
-graph_modifiers_test.cpp.i:
-	cd /Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug && $(MAKE) $(MAKESILENT) -f test/graph/CMakeFiles/graph_modifiers_test.dir/build.make test/graph/CMakeFiles/graph_modifiers_test.dir/graph_modifiers_test.cpp.i
-.PHONY : graph_modifiers_test.cpp.i
-
-graph_modifiers_test.s: graph_modifiers_test.cpp.s
-.PHONY : graph_modifiers_test.s
-
-# target to generate assembly for a file
-graph_modifiers_test.cpp.s:
-	cd /Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug && $(MAKE) $(MAKESILENT) -f test/graph/CMakeFiles/graph_modifiers_test.dir/build.make test/graph/CMakeFiles/graph_modifiers_test.dir/graph_modifiers_test.cpp.s
-.PHONY : graph_modifiers_test.cpp.s
-
-graph_other_test.o: graph_other_test.cpp.o
-.PHONY : graph_other_test.o
-
-# target to build an object file
-graph_other_test.cpp.o:
-	cd /Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug && $(MAKE) $(MAKESILENT) -f test/graph/CMakeFiles/graph_other_test.dir/build.make test/graph/CMakeFiles/graph_other_test.dir/graph_other_test.cpp.o
-.PHONY : graph_other_test.cpp.o
-
-graph_other_test.i: graph_other_test.cpp.i
-.PHONY : graph_other_test.i
-
-# target to preprocess a source file
-graph_other_test.cpp.i:
-	cd /Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug && $(MAKE) $(MAKESILENT) -f test/graph/CMakeFiles/graph_other_test.dir/build.make test/graph/CMakeFiles/graph_other_test.dir/graph_other_test.cpp.i
-.PHONY : graph_other_test.cpp.i
-
-graph_other_test.s: graph_other_test.cpp.s
-.PHONY : graph_other_test.s
-
-# target to generate assembly for a file
-graph_other_test.cpp.s:
-	cd /Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug && $(MAKE) $(MAKESILENT) -f test/graph/CMakeFiles/graph_other_test.dir/build.make test/graph/CMakeFiles/graph_other_test.dir/graph_other_test.cpp.s
-.PHONY : graph_other_test.cpp.s
-
-graph_test1.o: graph_test1.cpp.o
-.PHONY : graph_test1.o
-
-# target to build an object file
-graph_test1.cpp.o:
-	cd /Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug && $(MAKE) $(MAKESILENT) -f test/graph/CMakeFiles/graph_test1.dir/build.make test/graph/CMakeFiles/graph_test1.dir/graph_test1.cpp.o
-.PHONY : graph_test1.cpp.o
-
-graph_test1.i: graph_test1.cpp.i
-.PHONY : graph_test1.i
-
-# target to preprocess a source file
-graph_test1.cpp.i:
-	cd /Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug && $(MAKE) $(MAKESILENT) -f test/graph/CMakeFiles/graph_test1.dir/build.make test/graph/CMakeFiles/graph_test1.dir/graph_test1.cpp.i
-.PHONY : graph_test1.cpp.i
-
-graph_test1.s: graph_test1.cpp.s
-.PHONY : graph_test1.s
-
-# target to generate assembly for a file
-graph_test1.cpp.s:
-	cd /Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug && $(MAKE) $(MAKESILENT) -f test/graph/CMakeFiles/graph_test1.dir/build.make test/graph/CMakeFiles/graph_test1.dir/graph_test1.cpp.s
-.PHONY : graph_test1.cpp.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -364,29 +174,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... test"
 	@echo "... graph_accessors_test"
-	@echo "... graph_constructors_test"
-	@echo "... graph_iterator_test"
-	@echo "... graph_modifiers_test"
-	@echo "... graph_other_test"
-	@echo "... graph_test1"
 	@echo "... graph_accessors_test.o"
 	@echo "... graph_accessors_test.i"
 	@echo "... graph_accessors_test.s"
-	@echo "... graph_constructors_test.o"
-	@echo "... graph_constructors_test.i"
-	@echo "... graph_constructors_test.s"
-	@echo "... graph_iterator_test.o"
-	@echo "... graph_iterator_test.i"
-	@echo "... graph_iterator_test.s"
-	@echo "... graph_modifiers_test.o"
-	@echo "... graph_modifiers_test.i"
-	@echo "... graph_modifiers_test.s"
-	@echo "... graph_other_test.o"
-	@echo "... graph_other_test.i"
-	@echo "... graph_other_test.s"
-	@echo "... graph_test1.o"
-	@echo "... graph_test1.i"
-	@echo "... graph_test1.s"
 .PHONY : help
 
 
