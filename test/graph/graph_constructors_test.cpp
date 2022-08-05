@@ -1,9 +1,9 @@
 #include "gdwg/graph.hpp"
 
 #include <catch2/catch.hpp>
-#include <iterator>
-#include <set>
-#include <string>
+//#include <iterator>
+//#include <set>
+//#include <string>
 
 TEST_CASE("Constructor: Default") {
 	auto g = gdwg::graph<int, std::string>{};
