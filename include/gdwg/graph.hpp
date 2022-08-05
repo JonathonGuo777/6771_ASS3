@@ -77,8 +77,7 @@ namespace gdwg {
 			if (this == std::addressof(other)) {
 				return *this;
 			}
-			std::swap(nodes_, other.nodes_);
-			std::swap(nodes_, other.nodes_);
+			swap(*this, other);
 			return *this;
 		}
 
