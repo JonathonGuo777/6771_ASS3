@@ -317,50 +317,33 @@ namespace gdwg {
 		struct node_cmp {
 			using is_transparent = std::true_type;
 
-			auto operator()(std::shared_ptr<N> const& lhs, std::shared_ptr<N> const& rhs) const -> bool {
-				return *lhs < *rhs;
+			auto operator()(std::shared_ptr<N> const& x, std::shared_ptr<N> const& y) const -> bool {
+				return *x < *y;
 			}
 
-			auto operator()(std::shared_ptr<N> const& lhs, N const& rhs) const -> bool {
-				return *lhs < rhs;
+			auto operator()(std::shared_ptr<N> const& x, N const& y) const -> bool {
+				return *x < y;
 			}
 
-			auto operator()(N const& lhs, std::shared_ptr<N> const& rhs) const -> bool {
-				return lhs < *rhs;
+			auto operator()(N const& x, std::shared_ptr<N> const& y) const -> bool {
+				return x < *y;
 			}
 		};
 
 		struct edge_cmp {
-			using is_transparent = std::true_type;
+			using is_transparent = void;
 
-			auto operator()(std::shared_ptr<edge> const& lhs, std::shared_ptr<edge> const& rhs) const
-			   -> bool {
-				return std::tie(*(lhs->src), *(lhs->dst), lhs->weight)
-				       < std::tie(*(rhs->src), *(rhs->dst), rhs->weight);
-			}
+			auto operator()(std::shared_ptr<edge> const& a,
+			                std::shared_ptr<edge> const& b) const noexcept -> bool {
+				if (*(a->src) != *(b->src)) {
+					return *(a->src) < *(b->src);
+				}
 
-			// Compare edge ptr to edge struct
-			auto operator()(std::shared_ptr<edge> const& lhs, struct edge const& rhs) const -> bool {
-				return std::tie(*(lhs->src), *(lhs->dst), lhs->weight)
-				       < std::tie(*(rhs.src), *(rhs.dst), rhs.weight);
-			}
+				if (*(a->dst) != *(b->dst)) {
+					return *(a->dst) < *(b->dst);
+				}
 
-			auto operator()(struct edge const& lhs, std::shared_ptr<edge> const& rhs) const -> bool {
-				return std::tie(*(lhs.src), *(lhs.dst), lhs.weight)
-				       < std::tie(*(rhs->src), *(rhs->dst), rhs->weight);
-			}
-
-			// Compare edge ptr to value type
-			auto operator()(std::shared_ptr<edge> const& lhs, struct value_type const& rhs) const
-			   -> bool {
-				return std::tie(*(lhs->src), *(lhs->dst), lhs->weight)
-				       < std::tie(rhs.from, rhs.to, rhs.weight);
-			}
-
-			auto operator()(struct value_type const& lhs, std::shared_ptr<edge> const& rhs) const
-			   -> bool {
-				return std::tie(lhs.from, lhs.to, lhs.weight)
-				       < std::tie(*(rhs->src), *(rhs->dst), rhs->weight);
+				return a->weight < b->weight;
 			}
 		};
 
