@@ -73,10 +73,6 @@ namespace gdwg {
 
 		// Move Assignment
 		auto operator=(graph&& other) noexcept -> graph& {
-			// Check for self assignment
-//			if (this == std::addressof(other)) {
-//				return *this;
-//			}
 			swap(*this, other);
 			return *this;
 		}
@@ -202,13 +198,12 @@ namespace gdwg {
 		/* Remove an edge pointed by i, return iterator of element after i. Constant */
 		auto erase_edge(iterator i) -> iterator {
 			// Check if exist
-			if (i == end() or i == iterator{}) {
-				return end();
+			if (i == iterator{}.end() or i == iterator{}) {
+				return iterator{}.end();
 			}
-
 			return iterator{edges_.erase(i.iter_)};
 		}
-		// to be improved
+
 		/* Erase [i, s) */
 		auto erase_edge(iterator i, iterator s) -> iterator {
 			return iterator{edges_.erase(i.iter_, s.iter_)};
@@ -270,12 +265,12 @@ namespace gdwg {
 			                         "don't exist in the graph");
 		}
 
-		// log (n) + log (e)
+		// log(n)+log(e)
 		[[nodiscard]] auto find(N const& src, N const& dst, E const& weight) const -> iterator {
 			return iterator{edges_.find(value_type{src, dst, weight})};
 		}
 
-		// log (n) + e
+		// log(n) + log(e)
 		[[nodiscard]] auto connections(N const& src) const -> std::vector<N> {
 			if (is_node(src)) {
 				auto v = std::vector<N>{};
