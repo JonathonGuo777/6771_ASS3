@@ -258,7 +258,7 @@ namespace gdwg {
 			if (is_node(src) and is_node(dst)) {
 				auto v = std::vector<E>{};
 				std::for_each(edges_.begin(), edges_.end(), [&v, &src, &dst](auto const& it) {
-					if (it.src == src and it.dst == dst) {
+					if (*(it->src) == src and *(it->dst) == dst) {
 						v.emplace_back(it.weight);
 					}
 				});
