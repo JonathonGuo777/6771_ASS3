@@ -104,12 +104,29 @@ namespace gdwg {
 				return false;
 			}
 
-//			// Insert the new node
-//			auto new_node = std::make_shared<N>(new_data);
-//			nodes_.emplace(new_node);
+			// Insert the new node
+			auto new_node = std::make_shared<N>(new_data);
+			nodes_.emplace(new_node);
 
-			insert_node(new_data);
-			merge_replace_node(old_data, new_data);
+			// Find all relevant edges
+			auto edge_ptrs = std::vector<std::shared_ptr<edge>>();
+			std::copy_if(edges_.begin(),
+			             edges_.end(),
+			             std::back_inserter(edge_ptrs),
+			             [&](auto const& edge_it) {
+				             return *(edge_it->src) == old_data or *(edge_it->dst) == old_data;
+			             });
+
+			// Replace the nodes
+			for (auto const& edge_it : edge_ptrs) {
+				auto new_src_ptr = *(edge_it->src) == old_data ? new_node.get() : edge_it->src;
+				auto new_dst_ptr = *(edge_it->dst) == old_data ? new_node.get() : edge_it->dst;
+
+				// Insert new and remove old
+				edges_.emplace(std::make_shared<edge>(edge{new_src_ptr, new_dst_ptr, edge_it->weight}));
+				edges_.erase(edge_it);
+			}
+
 			// Erase the old node
 			nodes_.erase(old_it);
 
