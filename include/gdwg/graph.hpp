@@ -74,9 +74,9 @@ namespace gdwg {
 		// Move Assignment
 		auto operator=(graph&& other) noexcept -> graph& {
 			// Check for self assignment
-			if (this == std::addressof(other)) {
-				return *this;
-			}
+//			if (this == std::addressof(other)) {
+//				return *this;
+//			}
 			swap(*this, other);
 			return *this;
 		}
@@ -376,9 +376,6 @@ namespace gdwg {
 
 		// Hidden Friend: Extractor
 		friend auto operator<<(std::ostream& os, graph const& g) -> std::ostream& {
-//			auto os = std::ostringstream{};
-
-//			std::for_each(g.nodes_.begin(), g.nodes_.end(), [&](auto const& node_it) 
 			for (auto const& node_it : g.nodes_)   {
 				os << *node_it << " (\n";
 				for (auto const& edge_it : g.edges_) {
@@ -388,7 +385,6 @@ namespace gdwg {
 				}
 				os << ")\n";
 			}
-
 			return os;
 		}
 
@@ -438,6 +434,7 @@ namespace gdwg {
 			}
 
 		private:
+			friend class graph<N, E>;
 			using edges_iterator = typename std::set<std::shared_ptr<edge>, edge_cmp>::iterator;
 
 			edges_iterator iter_;
@@ -445,7 +442,6 @@ namespace gdwg {
 			explicit iterator(edges_iterator begin)
 			: iter_{begin} {}
 
-			friend class graph<N, E>;
 		};
 	};
 } // namespace gdwg
