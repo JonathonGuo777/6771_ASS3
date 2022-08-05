@@ -67,7 +67,6 @@ namespace gdwg {
 				return *this;
 			}
 			auto obj = graph(other);
-//			swap(*this, obj);
 			std::swap(nodes_, obj.nodes_);
 			std::swap(edges_, obj.edges_);
 			return *this;
@@ -75,7 +74,6 @@ namespace gdwg {
 
 		// Move Assignment
 		auto operator=(graph&& other) noexcept -> graph& {
-//			swap(*this, other);
 			std::swap(nodes_, other.nodes_);
 			std::swap(edges_, other.edges_);
 			return *this;
@@ -136,6 +134,7 @@ namespace gdwg {
 
 			return true;
 		}
+
 		// to be improved
 		auto merge_replace_node(N const& old_data, N const& new_data) -> void {
 			auto old_it = nodes_.find(old_data);
@@ -197,7 +196,6 @@ namespace gdwg {
 			                         "don't exist in the graph");
 		}
 
-		/* Remove an edge pointed by i, return iterator of element after i. Constant */
 		auto erase_edge(iterator i) -> iterator {
 			// Check if exist
 			if (i == end() or i == iterator{}) {
@@ -206,17 +204,14 @@ namespace gdwg {
 			return iterator{edges_.erase(i.iter_)};
 		}
 
-		/* Erase [i, s) */
 		auto erase_edge(iterator i, iterator s) -> iterator {
 			return iterator{edges_.erase(i.iter_, s.iter_)};
 		}
 
-		/* Erase all nodes */
 		auto clear() noexcept -> void {
 			nodes_.clear();
 			edges_.clear();
 		}
-
 
 
 		// Accessors
@@ -312,7 +307,7 @@ namespace gdwg {
 
 	private:
 		struct node_cmp {
-			using is_transparent = std::true_type;
+			using is_transparent = void;
 
 			auto operator()(std::shared_ptr<N> const& x, std::shared_ptr<N> const& y) const -> bool {
 				return *x < *y;
@@ -329,7 +324,7 @@ namespace gdwg {
 		
 		// to be improved
 		struct edge_cmp {
-			using is_transparent = std::true_type;
+			using is_transparent = void;
 
 			auto operator()(std::shared_ptr<edge> const& x, std::shared_ptr<edge> const& y) const
 			   -> bool {
@@ -337,7 +332,6 @@ namespace gdwg {
 				       < std::tie(*(y->src), *(y->dst), y->weight);
 			}
 
-			// Compare edge ptr to edge struct
 			auto operator()(std::shared_ptr<edge> const& x, struct edge const& y) const -> bool {
 				return std::tie(*(x->src), *(x->dst), x->weight)
 				       < std::tie(*(y.src), *(y.dst), y.weight);
@@ -348,7 +342,6 @@ namespace gdwg {
 				       < std::tie(*(y->src), *(y->dst), y->weight);
 			}
 
-			// Compare edge ptr to value type
 			auto operator()(std::shared_ptr<edge> const& x, struct value_type const& y) const
 			   -> bool {
 				return std::tie(*(x->src), *(x->dst), x->weight)
@@ -364,12 +357,6 @@ namespace gdwg {
 
 		std::set<std::shared_ptr<N>, node_cmp> nodes_;
 		std::set<std::shared_ptr<edge>, edge_cmp> edges_;
-
-		/* Swap two graph */
-		static auto swap(graph<N, E>& first, graph<N, E>& second) noexcept {
-			std::swap(first.nodes_, second.nodes_);
-			std::swap(first.edges_, second.edges_);
-		}
 
 		// Hidden Friend: Extractor
 		friend auto operator<<(std::ostream& os, graph const& g) -> std::ostream& {
