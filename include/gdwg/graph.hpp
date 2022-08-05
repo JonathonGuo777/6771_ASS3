@@ -47,24 +47,6 @@ namespace gdwg {
 		}
 
 		// Copy Constructor
-//		graph(graph const& other){
-//			std::transform(other.nodes_.begin(),
-//			               other.nodes_.end(),
-//			               std::inserter(nodes_, nodes_.end()),
-//			               // Make a copy
-//			               [&](auto const& n_ptr) { return std::make_shared<N>(*n_ptr); });
-//
-//			std::transform(other.edges_.begin(),
-//			               other.edges_.end(),
-//			               std::inserter(edges_, edges_.end()),
-//			               // Find the ptr of the nodes created, avoid duplication
-//			               [&](auto const& e_ptr) {
-//				               struct edge new_edge = edge{(*(nodes_.find(*(e_ptr->src)))).get(),
-//				                                           (*(nodes_.find(*(e_ptr->dst)))).get(),
-//				                                           e_ptr->weight};
-//				               return std::make_shared<edge>(new_edge);
-//			               });
-//		}
 		graph(graph const& other){
 			for (auto& it : other.nodes_) {
 				nodes_.emplace(std::make_shared<N>(*it));
@@ -81,8 +63,11 @@ namespace gdwg {
 
 		// Copy Assignment
 		auto operator=(graph const& other) -> graph& {
-			auto copy = graph(other);
-			swap(*this, copy);
+			if (this == &other) {
+				return *this;
+			}
+			auto obj = graph(other);
+			swap(*this, obj);
 			return *this;
 		}
 
@@ -92,13 +77,8 @@ namespace gdwg {
 			if (this == std::addressof(other)) {
 				return *this;
 			}
-
-			swap(*this, other);
-
-			// Clear the moved from graph
-			other.nodes_.clear();
-			other.edges_.clear();
-
+			std::swap(nodes_, other.nodes_);
+			std::swap(nodes_, other.nodes_);
 			return *this;
 		}
 
