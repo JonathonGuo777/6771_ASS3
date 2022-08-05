@@ -255,20 +255,17 @@ namespace gdwg {
 		}
 
 		[[nodiscard]] auto weights(N const& src, N const& dst) const -> std::vector<E> {
-			if (not is_node(src) or not is_node(dst)) {
-				throw std::runtime_error("Cannot call gdwg::graph<N, E>::weights if src or dst node "
-				                         "don't exist in the graph");
+			if (is_node(src) and is_node(dst)) {
+				auto v = std::vector<E>{};
+				std::for_each(edges_.begin(), edges_.end(), [&v, &src, &dst](auto const& it) {
+					if (it.src == src and it.dst == dst) {
+						v.emplace_back(it.weight);
+					}
+				});
+				return v;
 			}
-
-			// Get all weights
-			auto weights = std::vector<E>();
-			for (auto const& e_ptr : edges_) {
-				if (*(e_ptr->src) == src and *(e_ptr->dst) == dst) {
-					weights.push_back(e_ptr->weight);
-				}
-			}
-
-			return weights;
+			throw std::runtime_error("Cannot call gdwg::graph<N, E>::weights if src or dst node "
+			                         "don't exist in the graph");
 		}
 
 		// log (n) + log (e)
