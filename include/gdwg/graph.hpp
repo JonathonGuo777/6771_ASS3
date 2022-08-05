@@ -247,9 +247,12 @@ namespace gdwg {
 
 		[[nodiscard]] auto nodes() const -> std::vector<N> {
 			auto v = std::vector<N>{};
-			std::for_each(nodes_.begin(), nodes_.end(), [&v](auto const& it) {
+//			std::for_each(nodes_.begin(), nodes_.end(), [&v](auto const& it) {
+//				v.emplace_back(*it);
+//			});
+			for (auto const& it : nodes_){
 				v.emplace_back(*it);
-			});
+			}
 			return v;
 		}
 
