@@ -330,20 +330,38 @@ namespace gdwg {
 			}
 		};
 
+		// to be improved
 		struct edge_cmp {
-			using is_transparent = void;
+			using is_transparent = std::true_type;
 
-			auto operator()(std::shared_ptr<edge> const& a,
-			                std::shared_ptr<edge> const& b) const noexcept -> bool {
-				if (*(a->src) != *(b->src)) {
-					return *(a->src) < *(b->src);
-				}
+			auto operator()(std::shared_ptr<edge> const& x, std::shared_ptr<edge> const& y) const
+			   -> bool {
+				return std::tie(*(x->src), *(x->dst), x->weight)
+				       < std::tie(*(y->src), *(y->dst), y->weight);
+			}
 
-				if (*(a->dst) != *(b->dst)) {
-					return *(a->dst) < *(b->dst);
-				}
+			// Compare edge ptr to edge struct
+			auto operator()(std::shared_ptr<edge> const& x, struct edge const& y) const -> bool {
+				return std::tie(*(x->src), *(x->dst), x->weight)
+				       < std::tie(*(y.src), *(y.dst), y.weight);
+			}
 
-				return a->weight < b->weight;
+			auto operator()(struct edge const& x, std::shared_ptr<edge> const& y) const -> bool {
+				return std::tie(*(x.src), *(x.dst), x.weight)
+				       < std::tie(*(y->src), *(y->dst), y->weight);
+			}
+
+			// Compare edge ptr to value type
+			auto operator()(std::shared_ptr<edge> const& x, struct value_type const& y) const
+			   -> bool {
+				return std::tie(*(x->src), *(x->dst), x->weight)
+				       < std::tie(y.from, y.to, y.weight);
+			}
+
+			auto operator()(struct value_type const& x, std::shared_ptr<edge> const& y) const
+			   -> bool {
+				return std::tie(x.from, x.to, x.weight)
+				       < std::tie(*(y->src), *(y->dst), y->weight);
 			}
 		};
 
@@ -358,22 +376,15 @@ namespace gdwg {
 
 		// Hidden Friend: Extractor
 		friend auto operator<<(std::ostream& os, graph const& g) -> std::ostream& {
-			auto oss = std::ostringstream{};
-
-			std::for_each(g.nodes_.begin(), g.nodes_.end(), [&](auto const& n_ptr) {
-				oss << *n_ptr << " (\n";
-
-				for (auto const& edge_it : g.edges_) {
-					if (*(edge_it->src) == *n_ptr) {
-						oss << "  " << *(edge_it->dst) << " | " << edge_it->weight << "\n";
+			std::for_each(g.nodes_.begin(), g.nodes_.end(), [&](auto const& it_node){
+				os << *it_node << "(\n";
+				std::for_each(g.edges_.begin(), g.edges_.end(), [&](auto const& it_edge){
+					if (*(it_edge->src) == *it_node) {
+						os << "  " << *(it_edge->dst)<<" | "<<it_edge->weight<<"\n";
 					}
-				}
-
-				oss << ")\n";
+				});
+				os << ")\n";
 			});
-
-			os << oss.str();
-
 			return os;
 		}
 
