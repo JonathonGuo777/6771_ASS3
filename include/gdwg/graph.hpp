@@ -259,11 +259,11 @@ namespace gdwg {
 		[[nodiscard]] auto weights(N const& src, N const& dst) const -> std::vector<E> {
 			if (is_node(src) and is_node(dst)) {
 				auto v = std::vector<E>{};
-				for (auto const& e_ptr : edges_) {
-					if (*(e_ptr->src) == src and *(e_ptr->dst) == dst) {
-						v.push_back(e_ptr->weight);
+				std::for_each(edges_.begin(), edges_.end(), [&v, &src, &dst](auto const& it) {
+					if (*(it->src) == *src and *(it->dst) == *dst) {
+						v.emplace_back(it.weight);
 					}
-				}
+				});
 				return v;
 			}
 			throw std::runtime_error("Cannot call gdwg::graph<N, E>::weights if src or dst node "
