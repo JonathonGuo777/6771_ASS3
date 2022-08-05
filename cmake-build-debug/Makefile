@@ -517,6 +517,58 @@ test_main/fast:
 .PHONY : test_main/fast
 
 #=============================================================================
+# Target rules for targets named graph_other_test
+
+# Build rule for target.
+graph_other_test: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 graph_other_test
+.PHONY : graph_other_test
+
+# fast build rule for target.
+graph_other_test/fast:
+	$(MAKE) $(MAKESILENT) -f test/graph/CMakeFiles/graph_other_test.dir/build.make test/graph/CMakeFiles/graph_other_test.dir/build
+.PHONY : graph_other_test/fast
+
+#=============================================================================
+# Target rules for targets named graph_modifiers_test
+
+# Build rule for target.
+graph_modifiers_test: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 graph_modifiers_test
+.PHONY : graph_modifiers_test
+
+# fast build rule for target.
+graph_modifiers_test/fast:
+	$(MAKE) $(MAKESILENT) -f test/graph/CMakeFiles/graph_modifiers_test.dir/build.make test/graph/CMakeFiles/graph_modifiers_test.dir/build
+.PHONY : graph_modifiers_test/fast
+
+#=============================================================================
+# Target rules for targets named graph_iterator_test
+
+# Build rule for target.
+graph_iterator_test: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 graph_iterator_test
+.PHONY : graph_iterator_test
+
+# fast build rule for target.
+graph_iterator_test/fast:
+	$(MAKE) $(MAKESILENT) -f test/graph/CMakeFiles/graph_iterator_test.dir/build.make test/graph/CMakeFiles/graph_iterator_test.dir/build
+.PHONY : graph_iterator_test/fast
+
+#=============================================================================
+# Target rules for targets named graph_constructors_test
+
+# Build rule for target.
+graph_constructors_test: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 graph_constructors_test
+.PHONY : graph_constructors_test
+
+# fast build rule for target.
+graph_constructors_test/fast:
+	$(MAKE) $(MAKESILENT) -f test/graph/CMakeFiles/graph_constructors_test.dir/build.make test/graph/CMakeFiles/graph_constructors_test.dir/build
+.PHONY : graph_constructors_test/fast
+
+#=============================================================================
 # Target rules for targets named graph_accessors_test
 
 # Build rule for target.
@@ -568,6 +620,10 @@ help:
 	@echo "... NightlyUpdate"
 	@echo "... client"
 	@echo "... graph_accessors_test"
+	@echo "... graph_constructors_test"
+	@echo "... graph_iterator_test"
+	@echo "... graph_modifiers_test"
+	@echo "... graph_other_test"
 	@echo "... test_main"
 .PHONY : help
 

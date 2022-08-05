@@ -175,6 +175,206 @@
 					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
+			<Target title="graph_other_test">
+				<Option output="/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/graph_other_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/Users/guoao/Desktop/comp6771/ass3/ass3/include"/>
+					<Add directory="/Users/guoao/Desktop/comp6771/ass3/ass3/test/graph"/>
+					<Add directory="/Users/guoao/Desktop/comp6771/ass3/ass3/test/."/>
+					<Add directory="/usr/local/Cellar/gcc/10.2.0/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/../../../../../../include/c++/10.2.0"/>
+					<Add directory="/usr/local/Cellar/gcc/10.2.0/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/../../../../../../include/c++/10.2.0/x86_64-apple-darwin20"/>
+					<Add directory="/usr/local/Cellar/gcc/10.2.0/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/../../../../../../include/c++/10.2.0/backward"/>
+					<Add directory="/usr/local/Cellar/gcc/10.2.0/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/include"/>
+					<Add directory="/usr/local/Cellar/gcc/10.2.0/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/include-fixed"/>
+					<Add directory="/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/Makefile&quot;  VERBOSE=1 graph_other_test"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="graph_other_test/fast">
+				<Option output="/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/graph_other_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/Users/guoao/Desktop/comp6771/ass3/ass3/include"/>
+					<Add directory="/Users/guoao/Desktop/comp6771/ass3/ass3/test/graph"/>
+					<Add directory="/Users/guoao/Desktop/comp6771/ass3/ass3/test/."/>
+					<Add directory="/usr/local/Cellar/gcc/10.2.0/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/../../../../../../include/c++/10.2.0"/>
+					<Add directory="/usr/local/Cellar/gcc/10.2.0/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/../../../../../../include/c++/10.2.0/x86_64-apple-darwin20"/>
+					<Add directory="/usr/local/Cellar/gcc/10.2.0/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/../../../../../../include/c++/10.2.0/backward"/>
+					<Add directory="/usr/local/Cellar/gcc/10.2.0/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/include"/>
+					<Add directory="/usr/local/Cellar/gcc/10.2.0/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/include-fixed"/>
+					<Add directory="/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/Makefile&quot;  VERBOSE=1 graph_other_test/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="graph_modifiers_test">
+				<Option output="/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/graph_modifiers_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/Users/guoao/Desktop/comp6771/ass3/ass3/include"/>
+					<Add directory="/Users/guoao/Desktop/comp6771/ass3/ass3/test/graph"/>
+					<Add directory="/Users/guoao/Desktop/comp6771/ass3/ass3/test/."/>
+					<Add directory="/usr/local/Cellar/gcc/10.2.0/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/../../../../../../include/c++/10.2.0"/>
+					<Add directory="/usr/local/Cellar/gcc/10.2.0/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/../../../../../../include/c++/10.2.0/x86_64-apple-darwin20"/>
+					<Add directory="/usr/local/Cellar/gcc/10.2.0/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/../../../../../../include/c++/10.2.0/backward"/>
+					<Add directory="/usr/local/Cellar/gcc/10.2.0/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/include"/>
+					<Add directory="/usr/local/Cellar/gcc/10.2.0/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/include-fixed"/>
+					<Add directory="/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/Makefile&quot;  VERBOSE=1 graph_modifiers_test"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="graph_modifiers_test/fast">
+				<Option output="/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/graph_modifiers_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/Users/guoao/Desktop/comp6771/ass3/ass3/include"/>
+					<Add directory="/Users/guoao/Desktop/comp6771/ass3/ass3/test/graph"/>
+					<Add directory="/Users/guoao/Desktop/comp6771/ass3/ass3/test/."/>
+					<Add directory="/usr/local/Cellar/gcc/10.2.0/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/../../../../../../include/c++/10.2.0"/>
+					<Add directory="/usr/local/Cellar/gcc/10.2.0/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/../../../../../../include/c++/10.2.0/x86_64-apple-darwin20"/>
+					<Add directory="/usr/local/Cellar/gcc/10.2.0/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/../../../../../../include/c++/10.2.0/backward"/>
+					<Add directory="/usr/local/Cellar/gcc/10.2.0/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/include"/>
+					<Add directory="/usr/local/Cellar/gcc/10.2.0/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/include-fixed"/>
+					<Add directory="/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/Makefile&quot;  VERBOSE=1 graph_modifiers_test/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="graph_iterator_test">
+				<Option output="/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/graph_iterator_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/Users/guoao/Desktop/comp6771/ass3/ass3/include"/>
+					<Add directory="/Users/guoao/Desktop/comp6771/ass3/ass3/test/graph"/>
+					<Add directory="/Users/guoao/Desktop/comp6771/ass3/ass3/test/."/>
+					<Add directory="/usr/local/Cellar/gcc/10.2.0/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/../../../../../../include/c++/10.2.0"/>
+					<Add directory="/usr/local/Cellar/gcc/10.2.0/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/../../../../../../include/c++/10.2.0/x86_64-apple-darwin20"/>
+					<Add directory="/usr/local/Cellar/gcc/10.2.0/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/../../../../../../include/c++/10.2.0/backward"/>
+					<Add directory="/usr/local/Cellar/gcc/10.2.0/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/include"/>
+					<Add directory="/usr/local/Cellar/gcc/10.2.0/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/include-fixed"/>
+					<Add directory="/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/Makefile&quot;  VERBOSE=1 graph_iterator_test"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="graph_iterator_test/fast">
+				<Option output="/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/graph_iterator_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/Users/guoao/Desktop/comp6771/ass3/ass3/include"/>
+					<Add directory="/Users/guoao/Desktop/comp6771/ass3/ass3/test/graph"/>
+					<Add directory="/Users/guoao/Desktop/comp6771/ass3/ass3/test/."/>
+					<Add directory="/usr/local/Cellar/gcc/10.2.0/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/../../../../../../include/c++/10.2.0"/>
+					<Add directory="/usr/local/Cellar/gcc/10.2.0/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/../../../../../../include/c++/10.2.0/x86_64-apple-darwin20"/>
+					<Add directory="/usr/local/Cellar/gcc/10.2.0/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/../../../../../../include/c++/10.2.0/backward"/>
+					<Add directory="/usr/local/Cellar/gcc/10.2.0/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/include"/>
+					<Add directory="/usr/local/Cellar/gcc/10.2.0/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/include-fixed"/>
+					<Add directory="/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/Makefile&quot;  VERBOSE=1 graph_iterator_test/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="graph_constructors_test">
+				<Option output="/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/graph_constructors_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/Users/guoao/Desktop/comp6771/ass3/ass3/include"/>
+					<Add directory="/Users/guoao/Desktop/comp6771/ass3/ass3/test/graph"/>
+					<Add directory="/Users/guoao/Desktop/comp6771/ass3/ass3/test/."/>
+					<Add directory="/usr/local/Cellar/gcc/10.2.0/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/../../../../../../include/c++/10.2.0"/>
+					<Add directory="/usr/local/Cellar/gcc/10.2.0/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/../../../../../../include/c++/10.2.0/x86_64-apple-darwin20"/>
+					<Add directory="/usr/local/Cellar/gcc/10.2.0/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/../../../../../../include/c++/10.2.0/backward"/>
+					<Add directory="/usr/local/Cellar/gcc/10.2.0/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/include"/>
+					<Add directory="/usr/local/Cellar/gcc/10.2.0/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/include-fixed"/>
+					<Add directory="/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/Makefile&quot;  VERBOSE=1 graph_constructors_test"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="graph_constructors_test/fast">
+				<Option output="/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/graph_constructors_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/Users/guoao/Desktop/comp6771/ass3/ass3/include"/>
+					<Add directory="/Users/guoao/Desktop/comp6771/ass3/ass3/test/graph"/>
+					<Add directory="/Users/guoao/Desktop/comp6771/ass3/ass3/test/."/>
+					<Add directory="/usr/local/Cellar/gcc/10.2.0/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/../../../../../../include/c++/10.2.0"/>
+					<Add directory="/usr/local/Cellar/gcc/10.2.0/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/../../../../../../include/c++/10.2.0/x86_64-apple-darwin20"/>
+					<Add directory="/usr/local/Cellar/gcc/10.2.0/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/../../../../../../include/c++/10.2.0/backward"/>
+					<Add directory="/usr/local/Cellar/gcc/10.2.0/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/include"/>
+					<Add directory="/usr/local/Cellar/gcc/10.2.0/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/include-fixed"/>
+					<Add directory="/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/Makefile&quot;  VERBOSE=1 graph_constructors_test/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
 			<Target title="graph_accessors_test">
 				<Option output="/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/graph_accessors_test" prefix_auto="0" extension_auto="0"/>
 				<Option working_dir="/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph"/>
@@ -231,6 +431,18 @@
 		</Unit>
 		<Unit filename="/Users/guoao/Desktop/comp6771/ass3/ass3/test/graph/graph_accessors_test.cpp">
 			<Option target="graph_accessors_test"/>
+		</Unit>
+		<Unit filename="/Users/guoao/Desktop/comp6771/ass3/ass3/test/graph/graph_constructors_test.cpp">
+			<Option target="graph_constructors_test"/>
+		</Unit>
+		<Unit filename="/Users/guoao/Desktop/comp6771/ass3/ass3/test/graph/graph_iterator_test.cpp">
+			<Option target="graph_iterator_test"/>
+		</Unit>
+		<Unit filename="/Users/guoao/Desktop/comp6771/ass3/ass3/test/graph/graph_modifiers_test.cpp">
+			<Option target="graph_modifiers_test"/>
+		</Unit>
+		<Unit filename="/Users/guoao/Desktop/comp6771/ass3/ass3/test/graph/graph_other_test.cpp">
+			<Option target="graph_other_test"/>
 		</Unit>
 		<Unit filename="/Users/guoao/Desktop/comp6771/ass3/ass3/test/test_main.cpp">
 			<Option target="test_main"/>

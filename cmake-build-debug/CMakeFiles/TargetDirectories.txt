@@ -37,7 +37,11 @@
 /Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/CMakeFiles/edit_cache.dir
 /Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/CMakeFiles/test.dir
 /Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/CMakeFiles/test_main.dir
-/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/CMakeFiles/rebuild_cache.dir
 /Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/CMakeFiles/edit_cache.dir
 /Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/CMakeFiles/test.dir
+/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/CMakeFiles/rebuild_cache.dir
+/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/CMakeFiles/graph_other_test.dir
+/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/CMakeFiles/graph_modifiers_test.dir
+/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/CMakeFiles/graph_iterator_test.dir
+/Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/CMakeFiles/graph_constructors_test.dir
 /Users/guoao/Desktop/comp6771/ass3/ass3/cmake-build-debug/test/graph/CMakeFiles/graph_accessors_test.dir

@@ -1,299 +1,374 @@
 #include "gdwg/graph.hpp"
 
 #include <catch2/catch.hpp>
+#include <iostream>
+#include <iterator>
+#include <set>
+#include <sstream>
+#include <stdexcept>
+#include <string>
+#include <string_view>
 
-// insert node
-TEST_CASE("insert_node_no_duplicate") {
-	using graph = gdwg::graph<int, int>;
-	auto g = graph();
-	CHECK(g.empty());
-	auto inserted = g.insert_node(1);
-	CHECK(g.nodes().size() == 1);
-	CHECK(g.nodes().at(0) == 1);
-	CHECK(inserted);
-}
+TEST_CASE("Insert node") {
+	auto g = gdwg::graph<int, std::string>{1};
+	CHECK(g.insert_node(7));
+	CHECK(g.insert_node(-1));
 
-TEST_CASE("insert_node_with_duplicate") {
-	using graph = gdwg::graph<int, int>;
-	auto g = graph();
-	CHECK(g.empty());
-	auto inserted = g.insert_node(1);
-	SECTION("check initial insert is okay") {
-		CHECK(g.nodes().size() == 1);
-		CHECK(g.nodes().at(0) == 1);
-		CHECK(inserted);
-	}
-	SECTION("Check duplicate insert has no effect") {
-		inserted = g.insert_node(1);
-		CHECK(g.nodes().size() == 1);
-		CHECK(g.nodes().at(0) == 1);
-		CHECK(!inserted);
+	CHECK(g.is_node(1));
+	CHECK(g.is_node(-1));
+	CHECK(g.is_node(7));
+
+	SECTION("Insert existing node") {
+		CHECK_FALSE(g.insert_node(7));
+		CHECK_FALSE(g.insert_node(1));
 	}
 }
 
-// insert edge
-TEST_CASE("insert_edge_default") {
-	using graph = gdwg::graph<int, int>;
-	auto g = graph{1, 2, 3, 4};
-	auto inserted = g.insert_edge(1, 2, 900);
-	CHECK(inserted);
-	inserted = g.insert_edge(1, 2, 4);
-	CHECK(inserted);
-	inserted = g.insert_edge(1, 2, 4);
-	CHECK(!inserted);
-	inserted = g.insert_edge(1, 3, 5);
-	CHECK(inserted);
-	CHECK(g.connections(1) == std::vector<int>{2, 3});
-	// checks weights sorted
-	CHECK(g.weights(1, 2) == std::vector<int>{4, 900});
-}
+TEST_CASE("Insert edge") {
+	auto g = gdwg::graph<std::string, int>{"Yoona", "Taeyeon", "Tzuyu"};
 
-TEST_CASE("insert_edge_missing_node") {
-	using graph = gdwg::graph<int, int>;
-	auto default_graph = graph();
-	auto g = graph{1, 2, 3, 4};
-	CHECK_THROWS_WITH(g.insert_edge(1, 69, 900),
-	                  "Cannot call gdwg::graph<N, E>::insert_edge when either from or to node does not exist");
-	CHECK_THROWS_WITH(g.insert_edge(69, 1, 900),
-	                  "Cannot call gdwg::graph<N, E>::insert_edge when either from or to node does not exist");
-	CHECK_THROWS_WITH(g.insert_edge(69, 69, 900),
-	                  "Cannot call gdwg::graph<N, E>::insert_edge when either from or to node does not exist");
-}
+	SECTION("Insert legal edges") {
+		CHECK(g.insert_edge("Yoona", "Tzuyu", 530));
+		CHECK(g.insert_edge("Yoona", "Yoona", 530)); // Reflexive edge
 
-// erase node
-TEST_CASE("remove_node_default") {
-	using graph = gdwg::graph<int, int>;
-	auto g = graph{1, 2, 3, 4};
-	g.insert_edge(1, 2, 9);
-	CHECK(g.erase_node(1));
-	CHECK(g.nodes() == std::vector<int>{2, 3, 4});
-	CHECK(g.connections(2) == std::vector<int>{});
-	CHECK(g.connections(3) == std::vector<int>{});
-	CHECK(g.connections(4) == std::vector<int>{});
-}
+		CHECK(g.find("Yoona", "Tzuyu", 530) != g.end());
+		CHECK(g.find("Yoona", "Yoona", 530) != g.end());
 
-TEST_CASE("remove_node_false_cases") {
-	using graph = gdwg::graph<int, int>;
-	auto g = graph{1, 2, 3, 4};
-	g.insert_edge(1, 2, 9);
-	CHECK(!g.erase_node(69));
-	CHECK(g.nodes() == std::vector<int>{1, 2, 3, 4});
-	CHECK(g.connections(1) == std::vector<int>{2});
-	CHECK(g.weights(1, 2) == std::vector<int>{9});
-	CHECK(g.connections(2) == std::vector<int>{});
-	CHECK(g.connections(3) == std::vector<int>{});
-	CHECK(g.connections(4) == std::vector<int>{});
-}
+		// Edge with the same src and dst but different weight
+		CHECK(g.insert_edge("Yoona", "Tzuyu", 1314));
+		CHECK(g.insert_edge("Yoona", "Yoona", 1314)); // Reflexive edge
 
-// erase edge
-TEST_CASE("remove_edges_default") {
-	using graph = gdwg::graph<int, int>;
-	auto g = graph{1, 2, 3, 4};
-	g.insert_edge(1, 2, 9);
-	SECTION("Checking graph before erase conditions") {
-		CHECK(g.nodes() == std::vector<int>{1, 2, 3, 4});
-		CHECK(g.connections(1) == std::vector<int>{2});
-		CHECK(g.weights(1, 2) == std::vector<int>{9});
-		CHECK(g.connections(2) == std::vector<int>{});
-		CHECK(g.connections(3) == std::vector<int>{});
-		CHECK(g.connections(4) == std::vector<int>{});
+		CHECK(g.find("Yoona", "Tzuyu", 1314) != g.end());
+		CHECK(g.find("Yoona", "Yoona", 1314) != g.end());
 	}
-	SECTION("Removing the edge and checking graph post conditions"){
-		CHECK(g.erase_edge(1, 2, 9));
-		CHECK(g.nodes() == std::vector<int>{1, 2, 3, 4});
-		CHECK(g.connections(1) == std::vector<int>{});
-		CHECK(g.weights(1, 2) == std::vector<int>{});
-		CHECK(g.connections(2) == std::vector<int>{});
-		CHECK(g.connections(3) == std::vector<int>{});
-		CHECK(g.connections(4) == std::vector<int>{});
+
+	SECTION("Insert existing node") {
+		CHECK(g.insert_edge("Yoona", "Tzuyu", 530));
+		CHECK(g.insert_edge("Yoona", "Yoona", 530)); // Reflexive edge
+
+		CHECK_FALSE(g.insert_edge("Yoona", "Tzuyu", 530));
+		CHECK_FALSE(g.insert_edge("Yoona", "Yoona", 530)); // Reflexive edge
+	}
+
+	SECTION("Exception: Either src or dst not exist") {
+		// dst not exist
+		CHECK_THROWS_MATCHES(g.insert_edge("Yoona", "Mina", 1314),
+		                     std::runtime_error,
+		                     Catch::Matchers::Message("Cannot call gdwg::graph<N, E>::insert_edge "
+		                                              "when "
+		                                              "either src or dst node does not exist"));
+
+		// src not exist
+		CHECK_THROWS_MATCHES(g.insert_edge("Nayeon", "Taeyeon", 520),
+		                     std::runtime_error,
+		                     Catch::Matchers::Message("Cannot call gdwg::graph<N, E>::insert_edge "
+		                                              "when "
+		                                              "either src or dst node does not exist"));
+
+		// both not exist
+		CHECK_THROWS_MATCHES(g.insert_edge("Nayeon", "Mina", 520),
+		                     std::runtime_error,
+		                     Catch::Matchers::Message("Cannot call gdwg::graph<N, E>::insert_edge "
+		                                              "when "
+		                                              "either src or dst node does not exist"));
 	}
 }
 
-TEST_CASE("remove_edges_errors") {
-	using graph = gdwg::graph<int, int>;
-	auto g = graph{1, 2, 3, 4};
-	g.insert_edge(1, 2, 9);
-	SECTION("Check graph is made properly") {
-		CHECK(g.nodes() == std::vector<int>{1, 2, 3, 4});
-		CHECK(g.connections(1) == std::vector<int>{2});
-		CHECK(g.weights(1, 2) == std::vector<int>{9});
-		CHECK(g.connections(2) == std::vector<int>{});
-		CHECK(g.connections(3) == std::vector<int>{});
-		CHECK(g.connections(4) == std::vector<int>{});
+TEST_CASE("Replace Node") {
+	auto g = gdwg::graph<std::string, int>{"Yoona", "Taeyeon", "Tzuyu"};
+
+	SECTION("Simple case: If node are replaced") {
+		CHECK(g.replace_node("Yoona", "Rose"));
+
+		CHECK(g.is_node("Rose"));
+		CHECK_FALSE(g.is_node("Yoona"));
 	}
-	SECTION("erase edge returns false for nodes that exist") {
-		CHECK(!g.erase_edge(1, 2, 99));
-		CHECK(!g.erase_edge(1, 3, 99));
-		CHECK(!g.erase_edge(2, 2, 99));
-		CHECK(!g.erase_edge(2, 2, 9));
+
+	SECTION("Hard case: If edges are also replaced") {
+		CHECK(g.insert_edge("Yoona", "Taeyeon", 818));
+		CHECK(g.insert_edge("Taeyeon", "Yoona", 1314));
+		CHECK(g.insert_edge("Yoona", "Yoona", 530));
+		CHECK(g.insert_edge("Yoona", "Yoona", 1314));
+
+		CHECK(g.replace_node("Yoona", "Rose"));
+
+		// Check that the edges no longer exist
+		CHECK(g.find("Yoona", "Taeyeon", 818) == g.end());
+		CHECK(g.find("Taeyeon", "Yoona", 1314) == g.end());
+		CHECK(g.find("Yoona", "Yoona", 530) == g.end());
+		CHECK(g.find("Yoona", "Yoona", 1314) == g.end());
+
+		// Check that the old node doesn't exist, and new node exist
+		CHECK(g.is_node("Rose"));
+		CHECK_FALSE(g.is_node("Yoona"));
+
+		// Check we have these edges
+		CHECK(g.find("Rose", "Taeyeon", 818) != g.end());
+		CHECK(g.find("Taeyeon", "Rose", 1314) != g.end());
+		CHECK(g.find("Rose", "Rose", 530) != g.end());
+		CHECK(g.find("Rose", "Rose", 1314) != g.end());
 	}
-	SECTION("erase edge throws exception when nodes either from and to dont exist") {
-		CHECK_THROWS_WITH(g.erase_edge(2, 29, 9),
-		                  "Cannot call gdwg::graph<N, E>::erase_edge on src or dst if they don't exist in the graph");
-		CHECK_THROWS_WITH(g.erase_edge(29, 2, 9),
-		                  "Cannot call gdwg::graph<N, E>::erase_edge on src or dst if they don't exist in the graph");
-		CHECK_THROWS_WITH(g.erase_edge(82, 29, 9),
-		                  "Cannot call gdwg::graph<N, E>::erase_edge on src or dst if they don't exist in the graph");
+
+	SECTION("new_data already exist") {
+		CHECK_FALSE(g.replace_node("Yoona", "Taeyeon"));
+
+		CHECK(g.is_node("Yoona"));
+		CHECK(g.is_node("Taeyeon"));
 	}
-	SECTION("Check graph is unmodified from these fail cases above") {
-		CHECK(g.nodes() == std::vector<int>{1, 2, 3, 4});
-		CHECK(g.connections(1) == std::vector<int>{2});
-		CHECK(g.weights(1, 2) == std::vector<int>{9});
-		CHECK(g.connections(2) == std::vector<int>{});
-		CHECK(g.connections(3) == std::vector<int>{});
-		CHECK(g.connections(4) == std::vector<int>{});
+
+	SECTION("Exception: is_node(old_data) == false") {
+		// src, dst not exist
+		CHECK_THROWS_MATCHES(g.replace_node("Yeonwoo", "Mina"),
+		                     std::runtime_error,
+		                     Catch::Matchers::Message("Cannot call gdwg::graph<N, E>::replace_node "
+		                                              "on a node that doesn't exist"));
+
+		// src not exist, dst exist
+		CHECK_THROWS_MATCHES(g.replace_node("Yeonwoo", "Taeyeon"),
+		                     std::runtime_error,
+		                     Catch::Matchers::Message("Cannot call gdwg::graph<N, E>::replace_node "
+		                                              "on a node that doesn't exist"));
 	}
 }
 
-// erase edge and iterator
-TEST_CASE("default_delete_iterator") {
-	using graph = gdwg::graph<int, int>;
-	auto g = graph{1, 2, 3, 4};
-	CHECK(g.insert_edge(1, 2, 3));
-	CHECK(g.weights(1, 2) == std::vector<int>{3});
-	auto iterator_begin = g.begin();
-	CHECK(*iterator_begin == gdwg::graph<int, int>::value_type{1, 2, 3});
-	auto next_iterator = g.erase_edge(iterator_begin);
-	CHECK(next_iterator == g.end());
-	CHECK(g.weights(1, 2) == std::vector<int>{});
+TEST_CASE("Merge and replace node") {
+	auto g = gdwg::graph<std::string, int>{"Yoona", "Taeyeon", "Tzuyu"};
+
+	SECTION("Simple case: No duplicate edge after replacement") {
+		g.insert_edge("Yoona", "Taeyeon", 309);
+		g.insert_edge("Yoona", "Yoona", 530);
+
+		g.merge_replace_node("Yoona", "Tzuyu");
+
+		// Check old edge are removed
+		CHECK(g.find("Yoona", "Taeyeon", 309) == g.end());
+		CHECK(g.find("Yoona", "Yoona", 530) == g.end());
+
+		// Check the existence of the new edges
+		CHECK(g.find("Tzuyu", "Tzuyu", 530) != g.end());
+		CHECK(g.find("Tzuyu", "Taeyeon", 309) != g.end());
+
+		// Check that the old node is remove
+		CHECK_FALSE(g.is_node("Yoona"));
+	}
+
+	SECTION("Hard case: Edges need to be merged") {
+		g.insert_edge("Yoona", "Tzuyu", 309);
+		g.insert_edge("Tzuyu", "Tzuyu", 309);
+		g.insert_edge("Yoona", "Taeyeon", 520);
+		g.insert_edge("Tzuyu", "Taeyeon", 520);
+
+		g.merge_replace_node("Yoona", "Tzuyu");
+
+		// Check that the old node is remove
+		CHECK_FALSE(g.is_node("Yoona"));
+
+		// Check that edges have been merged, by checking the printed graph
+		auto oss = std::ostringstream();
+		oss << g;
+		auto const expected_oss = std::string_view(R"(Taeyeon (
+)
+Tzuyu (
+  Taeyeon | 520
+  Tzuyu | 309
+)
+)");
+		CHECK(oss.str() == expected_oss);
+	}
+
+	SECTION("Exception: either is_node(old_data) or is_node(new_data) are false") {
+		// src not exist, dst exist
+		CHECK_THROWS_MATCHES(g.merge_replace_node("Yeonwoo", "Taeyeon"),
+		                     std::runtime_error,
+		                     Catch::Matchers::Message("Cannot call gdwg::graph<N, "
+		                                              "E>::merge_replace_node on old or new data if "
+		                                              "they don't exist in the graph"));
+
+		// dst not exist, src exist
+		CHECK_THROWS_MATCHES(g.merge_replace_node("Taeyeon", "Yeonwoo"),
+		                     std::runtime_error,
+		                     Catch::Matchers::Message("Cannot call gdwg::graph<N, "
+		                                              "E>::merge_replace_node on old or new data if "
+		                                              "they don't exist in the graph"));
+
+		// Both not exist
+		CHECK_THROWS_MATCHES(g.merge_replace_node("Yeonwoo", "Mina"),
+		                     std::runtime_error,
+		                     Catch::Matchers::Message("Cannot call gdwg::graph<N, "
+		                                              "E>::merge_replace_node on old or new data if "
+		                                              "they don't exist in the graph"));
+	}
 }
 
-TEST_CASE("multiple_iterator_erase_few") {
-	using graph = gdwg::graph<int, int>;
-	auto g = graph{1, 2, 3, 4};
-	CHECK(g.insert_edge(1, 2, 3));
-	CHECK(g.insert_edge(1, 3, 3));
-	CHECK(g.insert_edge(1, 4, 3));
-	CHECK(g.weights(1, 2) == std::vector<int>{3});
-	auto iterator_begin = g.begin();
-	auto iterator_end = iterator_begin++;
-	auto next_iterator = g.erase_edge(iterator_begin, iterator_end);
-	CHECK(*next_iterator == gdwg::graph<int, int>::value_type{1, 3, 3});
-	// check graph is reset
-	CHECK(*g.begin() == gdwg::graph<int, int>::value_type{1, 3, 3});
+TEST_CASE("Erase node") {
+	auto g = gdwg::graph<std::string, int>{"Yoona", "Taeyeon", "Tzuyu"};
+
+	SECTION("Erase not exist node") {
+		CHECK_FALSE(g.erase_node("Twice"));
+	}
+
+	SECTION("No edge situtation") {
+		CHECK(g.erase_node("Yoona"));
+
+		CHECK(g.is_node("Yoona") == false);
+	}
+
+	SECTION("With edge: Relevant edges should be removed") {
+		g.insert_edge("Yoona", "Yoona", 530);
+		g.insert_edge("Yoona", "Yoona", 520);
+		g.insert_edge("Yoona", "Tzuyu", 309);
+		g.insert_edge("Taeyeon", "Tzuyu", 309);
+
+		CHECK(g.erase_node("Yoona"));
+
+		// Non-relevant is not removed
+		CHECK(g.find("Taeyeon", "Tzuyu", 309) != g.end());
+
+		// Relevant ones are removed
+		CHECK(g.find("Yoona", "Yoona", 530) == g.end());
+		CHECK(g.find("Yoona", "Yoona", 520) == g.end());
+		CHECK(g.find("Yoona", "Tzuyu", 309) == g.end());
+	}
 }
 
-TEST_CASE("multiple_iterator_erase_all") {
-	using graph = gdwg::graph<int, int>;
-	auto g = graph{1, 2, 3, 4};
-	CHECK(g.insert_edge(1, 2, 3));
-	CHECK(g.insert_edge(1, 3, 3));
-	CHECK(g.insert_edge(1, 4, 3));
-	CHECK(g.weights(1, 2) == std::vector<int>{3});
-	auto iterator_begin = g.begin();
-	auto iterator_end = g.end();
-	auto next_iterator = g.erase_edge(iterator_begin, iterator_end);
-	CHECK(next_iterator == g.end());
-	// check graph is reset
-	CHECK(g.begin() == g.end());
-	CHECK(g.nodes() == std::vector<int>{1, 2, 3, 4});
+TEST_CASE("Erase edge: (src, dst, weight)") {
+	auto g = gdwg::graph<std::string, int>{"Yoona", "Taeyeon", "Tzuyu"};
+
+	SECTION("Remove not exist edge") {
+		CHECK_FALSE(g.erase_edge("Yoona", "Taeyeon", 520));
+	}
+
+	SECTION("Remove an edge successfully") {
+		g.insert_edge("Tzuyu", "Taeyeon", 2);
+		g.insert_edge("Tzuyu", "Taeyeon", 4);
+		g.insert_edge("Yoona", "Taeyeon", 666);
+
+		CHECK(g.erase_edge("Tzuyu", "Taeyeon", 4));
+
+		// Check the remaining edges are correct
+		CHECK(g.find("Tzuyu", "Taeyeon", 4) == g.end());
+
+		CHECK(g.find("Tzuyu", "Taeyeon", 2) != g.end());
+		CHECK(g.find("Yoona", "Taeyeon", 666) != g.end());
+	}
+
+	SECTION("Exception: either is_node(src) or is_node(dst) is false.") {
+		// dst not exist
+		CHECK_THROWS_MATCHES(g.erase_edge("Taeyeon", "Mina", 1314),
+		                     std::runtime_error,
+		                     Catch::Matchers::Message("Cannot call gdwg::graph<N, E>::erase_edge on "
+		                                              "src or dst if they don't exist in the graph"));
+
+		// // src not exist
+		CHECK_THROWS_MATCHES(g.erase_edge("Yeonwoo", "Taeyeon", 530),
+		                     std::runtime_error,
+		                     Catch::Matchers::Message("Cannot call gdwg::graph<N, E>::erase_edge on "
+		                                              "src or dst if they don't exist in the graph"));
+
+		// // Both not exist
+		CHECK_THROWS_MATCHES(g.erase_edge("Yeonwoo", "Mina", 520),
+		                     std::runtime_error,
+		                     Catch::Matchers::Message("Cannot call gdwg::graph<N, E>::erase_edge on "
+		                                              "src or dst if they don't exist in the graph"));
+	}
 }
 
-// replace node
-TEST_CASE("replace_node_success") {
-	using graph = gdwg::graph<std::string, int>;
-	auto g = graph{"hello", "replace me"};
-	g.insert_edge("hello", "replace me", 5);
-	auto replaced = g.replace_node("hello", "replaced_hello");
-	CHECK(replaced);
-	auto is_connected = g.is_connected("replaced_hello", "replace me");
-	CHECK(is_connected);
-	replaced = g.replace_node("replace me", "replaced");
-	CHECK(replaced);
-	is_connected = g.is_connected("replaced_hello", "replaced");
-	CHECK(is_connected);
-	CHECK(g.nodes() == std::vector<std::string>{"replaced", "replaced_hello"});
-	CHECK(g.connections("replaced_hello") == std::vector<std::string>{"replaced"});
-	CHECK(g.weights("replaced_hello", "replaced") == std::vector<int>{5});
-}
+TEST_CASE("Erase edge: (iterator i)") {
+	auto g = gdwg::graph<std::string, int>{"Yoona", "Taeyeon", "Tzuyu"};
 
-TEST_CASE("replace_node_errors") {
-	using graph = gdwg::graph<std::string, int>;
-	auto g = graph{"hello", "replace me"};
-	CHECK_THROWS_WITH(g.replace_node("helloWRONG", "replaced"), "Cannot call gdwg::graph<N, E>::replace_node on a node that doesn't exist");
-}
+	SECTION("Remove not exist edge") {
+		CHECK(g.erase_edge(g.begin()) == g.end());
+		CHECK(g.erase_edge(g.end()) == g.end());
+		CHECK(g.erase_edge(gdwg::graph<std::string, int>::iterator()) == g.end());
+	}
 
-TEST_CASE("replace_node_fail") {
-	using graph = gdwg::graph<std::string, int>;
-	auto g = graph{"hello", "replace me"};
-	auto replaced = g.replace_node("hello", "replace me");
-	CHECK(!replaced);
-	 CHECK(
+	SECTION("Remove from a graph with single edge") {
+		g.insert_edge("Tzuyu", "Taeyeon", 2);
 
-// merge replace node
-TEST_CASE("merge_replace_all_covered") {
-		using graph = gdwg::graph<std::string, int>;
-		auto g = graph{"A", "B", "C", "D"};
-		g.insert_edge("A", "B", 1);
-		g.insert_edge("A", "A", 1);
-		g.insert_edge("A", "A", 5);
-		g.insert_edge("A", "C", 2);
-		g.insert_edge("C", "A", 9);
-		g.insert_edge("A", "D", 3);
-		g.insert_edge("B", "B", 9);
-		g.merge_replace_node("A", "B");
-		SECTION("Check the graph state after merge replace") {
-			CHECK(g.nodes() == std::vector<std::string>{"B", "C", "D"});
-			CHECK(g.connections("B") == std::vector<std::string>{"B", "C", "D"});
-			CHECK(g.connections("C") == std::vector<std::string>{"B"});
-			CHECK(g.weights("B", "B") == std::vector<int>{1, 5, 9});
-			CHECK(g.weights("B", "C") == std::vector<int>{2});
-			CHECK(g.weights("B", "D") == std::vector<int>{3});
-			CHECK(g.weights("C", "B") == std::vector<int>{9});
+		CHECK(g.erase_edge(g.begin()) == g.end());
+		CHECK(g.find("Tzuyu", "Taeyeon", 2) == g.end());
+	}
+
+	SECTION("Remove from a graph with multiple edges") {
+		g.insert_edge("Tzuyu", "Taeyeon", 2);
+		g.insert_edge("Yoona", "Taeyeon", 666);
+		g.insert_edge("Tzuyu", "Taeyeon", 4);
+
+		SECTION("Test 1") {
+			CHECK(g.erase_edge(g.find("Tzuyu", "Taeyeon", 2)) == g.find("Tzuyu", "Taeyeon", 4));
+
+			// Only the particular edge is removed
+			CHECK(g.find("Tzuyu", "Taeyeon", 2) == g.end());
+			CHECK(g.find("Yoona", "Taeyeon", 666) != g.end());
+			CHECK(g.find("Tzuyu", "Taeyeon", 4) != g.end());
 		}
-}
 
-TEST_CASE("merge_replace_same") {
-		using graph = gdwg::graph<std::string, int>;
-		auto g = graph{"A", "B", "C", "D"};
-		g.insert_edge("A", "B", 1);
-		g.insert_edge("A", "C", 2);
-		g.insert_edge("A", "D", 3);
-		g.insert_edge("B", "B", 1);
-		SECTION("Check graph before merge replace is called") {
-			CHECK(g.nodes() == std::vector<std::string>{"A", "B", "C", "D"});
-			CHECK(g.connections("A") == std::vector<std::string>{"B", "C", "D"});
-			CHECK(g.weights("B", "B") == std::vector<int>{1});
-			CHECK(g.weights("B", "C") == std::vector<int>{});
-			CHECK(g.weights("B", "D") == std::vector<int>{});
-			CHECK(g.weights("A", "B") == std::vector<int>{1});
-			CHECK(g.weights("A", "C") == std::vector<int>{2});
-			CHECK(g.weights("A", "D") == std::vector<int>{3});
+		SECTION("Test 2") {
+			CHECK(g.erase_edge(g.find("Yoona", "Taeyeon", 666)) == g.end());
 		}
-		g.merge_replace_node("A", "A");
-		SECTION("Check same state of graph after merge replacing with the same node") {
-			CHECK(g.nodes() == std::vector<std::string>{"A", "B", "C", "D"});
-			CHECK(g.connections("A") == std::vector<std::string>{"B", "C", "D"});
-			CHECK(g.weights("B", "B") == std::vector<int>{1});
-			CHECK(g.weights("B", "C") == std::vector<int>{});
-			CHECK(g.weights("B", "D") == std::vector<int>{});
-			CHECK(g.weights("A", "B") == std::vector<int>{1});
-			CHECK(g.weights("A", "C") == std::vector<int>{2});
-			CHECK(g.weights("A", "D") == std::vector<int>{3});
+
+		SECTION("Test 3") {
+			CHECK(g.erase_edge(g.find("Tzuyu", "Taeyeon", 4)) == g.find("Yoona", "Taeyeon", 666));
 		}
+
+		SECTION("Test 4") {
+			CHECK(g.erase_edge(g.find("Tzuyu", "Taeyeon", 4)) == g.find("Yoona", "Taeyeon", 666));
+			CHECK(g.erase_edge(g.find("Tzuyu", "Taeyeon", 2)) == g.find("Yoona", "Taeyeon", 666));
+			CHECK(g.erase_edge(g.find("Yoona", "Taeyeon", 666)) == g.end());
+		}
+	}
 }
 
-TEST_CASE("merge_replace_errors") {
-		using graph = gdwg::graph<std::string, int>;
-		auto g = graph{"A", "B", "C", "D"};
-		g.insert_edge("A", "B", 1);
-		g.insert_edge("A", "C", 2);
-		g.insert_edge("A", "D", 3);
-		g.insert_edge("B", "B", 1);
-		CHECK_THROWS_WITH(g.merge_replace_node("A", "F"),
-		                  "Cannot call gdwg::graph<N, E>::merge_replace_node on old or new data if they don't exist in the graph");
-		CHECK_THROWS_WITH(g.merge_replace_node("G", "F"),
-		                  "Cannot call gdwg::graph<N, E>::merge_replace_node on old or new data if they don't exist in the graph");
-		CHECK_THROWS_WITH(g.merge_replace_node("B", "F"),
-		                  "Cannot call gdwg::graph<N, E>::merge_replace_node on old or new data if they don't exist in the graph");
+TEST_CASE("Erase edge: (iterator i, iterator s)") {
+	auto g = gdwg::graph<std::string, int>{"Yoona", "Taeyeon", "Tzuyu"};
+
+	SECTION("Remove from a graph with single edge") {
+		g.insert_edge("Tzuyu", "Taeyeon", 2);
+
+		CHECK(g.erase_edge(g.begin(), g.end()) == g.end());
+		CHECK(g.find("Tzuyu", "Taeyeon", 2) == g.end());
+	}
+
+	SECTION("Remove from a graph with multiple edges") {
+		g.insert_edge("Tzuyu", "Taeyeon", 2);
+		g.insert_edge("Yoona", "Taeyeon", 666);
+		g.insert_edge("Tzuyu", "Taeyeon", 4);
+
+		SECTION("Test 1") {
+			CHECK(g.erase_edge(g.find("Tzuyu", "Taeyeon", 2), g.find("Tzuyu", "Taeyeon", 4))
+			      == g.find("Tzuyu", "Taeyeon", 4));
+
+			// Only the particular edge is removed
+			CHECK(g.find("Tzuyu", "Taeyeon", 2) == g.end());
+			CHECK(g.find("Yoona", "Taeyeon", 666) != g.end());
+			CHECK(g.find("Tzuyu", "Taeyeon", 4) != g.end());
+		}
+
+		SECTION("Test 2") {
+			CHECK(g.erase_edge(g.find("Tzuyu", "Taeyeon", 4), g.end()) == g.end());
+
+			CHECK(g.find("Tzuyu", "Taeyeon", 2) != g.end());
+		}
+	}
 }
 
-// clear
-TEST_CASE("clear_graphs") {
-		using graph = gdwg::graph<int, int>;
-		auto g = graph{1,2,3,4,5,6,7,8,0, 9};
-		CHECK(g.nodes() == std::vector<int>{0,1,2,3,4,5,6,7,8,9});
+TEST_CASE("Clear") {
+	SECTION("Default constructed emtpy graph") {
+		auto g = gdwg::graph<std::string, int>{};
 		g.clear();
 		CHECK(g.empty());
-}
+	}
 
+	SECTION("Graph with nodes") {
+		auto g = gdwg::graph<std::string, int>{"one", "two"};
+		g.clear();
+		CHECK(g.empty());
+	}
+
+	SECTION("Graph with nodes and edges") {
+		auto g = gdwg::graph<std::string, int>{"one", "two"};
+		g.insert_edge("one", "two", 2);
+		g.clear();
+		CHECK(g.empty());
+	}
+}

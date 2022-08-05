@@ -1,118 +1,139 @@
 #include "gdwg/graph.hpp"
 
 #include <catch2/catch.hpp>
+#include <iostream>
+#include <iterator>
+#include <set>
+#include <sstream>
+#include <stdexcept>
+#include <string>
+#include <string_view>
+#include <vector>
 
-//  begin_end iterator
-TEST_CASE("empty_graph_with_nodes") {
-	using graph = gdwg::graph<int, int>;
-	const auto g1 = graph();
-	CHECK(g1.begin() == g1.end());
-	const auto g2 = graph{1,2,3,4,5};
-	CHECK(g2.nodes() == std::vector<int>{1,2,3,4,5});
-	CHECK(g2.begin() == g2.end());
+TEST_CASE("Iterator") {
+	SECTION("Empty Graph") {
+		auto const g_empty = gdwg::graph<std::string, int>{};
+		CHECK(g_empty.begin() == g_empty.end());
+	}
 
-}
+	auto g = gdwg::graph<std::string, int>{"Yoona", "Taeyeon", "Tzuyu"};
+	g.insert_edge("Yoona", "Taeyeon", 818);
+	g.insert_edge("Yoona", "Yoona", 530);
+	g.insert_edge("Tzuyu", "Taeyeon", 1314);
 
-TEST_CASE("graph_with_edges") {
-	using graph = gdwg::graph<int, int>;
-	using value_type = gdwg::graph<int, int>::value_type;
-	auto g = graph{1,2,3,4,5};
-	CHECK(g.nodes() == std::vector<int>{1,2,3,4,5});
-	CHECK(g.begin() == g.end());
-	g.insert_edge(1,2,3);
-	CHECK(*g.begin() == value_type{1,2,3});
-}
+	auto const g_const = g;
 
-// increment iterator
-TEST_CASE("increment_post") {
-	using graph = gdwg::graph<int, int>;
-	using value_type = gdwg::graph<int,int>::value_type;
-	auto g = graph{1,2,3,4,5};
-	g.insert_edge(1,2,3);
-	g.insert_edge(1,2,7);
-	g.insert_edge(1,2,4);
-	g.insert_edge(1,2,6);
-	auto it = g.begin();
-	CHECK(*it == value_type{1,2,3});
-	it = it++;
-	CHECK(*it == value_type{1,2,4});
-}
+	SECTION("Begin and dereference *") {
+		auto const it = g_const.begin();
 
-TEST_CASE("increment_pre") {
-	using graph = gdwg::graph<int, int>;
-	using value_type = gdwg::graph<int,int>::value_type;
-	auto g = graph{1,2,3,4,5};
-	g.insert_edge(1,2,3);
-	g.insert_edge(1,2,7);
-	g.insert_edge(1,2,4);
-	g.insert_edge(1,2,6);
-	auto it = g.begin();
-	CHECK(*it == value_type{1,2,3});
-	++it;
-	CHECK(*it == value_type{1,2,4});
-}
+		CHECK((*it).from == "Tzuyu");
+		CHECK((*it).to == "Taeyeon");
+		CHECK((*it).weight == 1314);
+	}
 
-// decrement iterator
-TEST_CASE("decrement_pre") {
-	using graph = gdwg::graph<int, int>;
-	using value_type = gdwg::graph<int,int>::value_type;
-	auto g = graph{1,2,3,4,5};
-	g.insert_edge(1,2,3);
-	g.insert_edge(1,2,7);
-	g.insert_edge(1,2,4);
-	g.insert_edge(1,2,6);
-	auto it_original = g.begin();
-	auto it = g.begin();
-	CHECK(*it == value_type{1,2,3});
-	it = it++;
-	CHECK(*it == value_type{1,2,4});
-	it = it--;
-	CHECK(*it == value_type{1,2,3});
-	CHECK(it == it_original);
-	CHECK(it_original == g.begin());
-}
+	SECTION("Traveral ++()") {
+		// Expected output
+		auto const exp = std::vector<gdwg::graph<std::string, int>::value_type>{
+		   {"Tzuyu", "Taeyeon", 1314},
+		   {"Yoona", "Taeyeon", 818},
+		   {"Yoona", "Yoona", 530},
+		};
 
-TEST_CASE("decrement_post") {
-	using graph = gdwg::graph<int, int>;
-	using value_type = gdwg::graph<int,int>::value_type;
-	auto g = graph{1,2,3,4,5};
-	g.insert_edge(1,2,3);
-	g.insert_edge(1,2,7);
-	g.insert_edge(1,2,4);
-	g.insert_edge(1,2,6);
-	auto it_original = g.begin();
-	auto it = g.begin();
-	CHECK(*it == value_type{1,2,3});
-	it = it++;
-	CHECK(*it == value_type{1,2,4});
-	--it;
-	CHECK(*it == value_type{1,2,3});
-	CHECK(it == it_original);
-	CHECK(it_original == g.begin());
-}
+		// Iterate through the graph
+		auto count = std::size_t{0};
+		for (auto it = g_const.begin(); it != g_const.end(); ++it, ++count) {
+			CHECK((*it).from == exp[count].from);
+			CHECK((*it).to == exp[count].to);
+			CHECK((*it).weight == exp[count].weight);
+		}
+	}
 
-// equals operator
-TEST_CASE("Equal_iterators") {
-	using graph = gdwg::graph<int, int>;
-	auto g = graph{1, 2, 3, 4, 5};
-	g.insert_edge(1, 2, 3);
-	CHECK(g.nodes() == std::vector<int>{1, 2, 3, 4, 5});
-	auto first_it = g.begin();
-	++first_it;
-	auto second_it = g.begin();
-	++second_it;
-	CHECK(first_it == second_it);
-	--second_it;
-	CHECK(!(second_it == first_it));
-	CHECK(second_it == g.begin());
-}
+	SECTION("Traveral ++(int)") {
+		auto it = g_const.begin();
 
-// dereference operator
-TEST_CASE("dereference_value") {
-	using graph = gdwg::graph<int, int>;
-	using value_type = gdwg::graph<int, int>::value_type;
-	auto g = graph{1, 2, 3, 4, 5};
-	g.insert_edge(1, 2, 3);
-	CHECK(g.nodes() == std::vector<int>{1, 2, 3, 4, 5});
-	CHECK(*g.begin() == value_type{1, 2, 3});
+		// Post increment and check if the iterator returned is correct
+		auto prev_it = it++;
+		CHECK((*prev_it).from == "Tzuyu");
+		CHECK((*prev_it).to == "Taeyeon");
+		CHECK((*prev_it).weight == 1314);
+
+		// Check if increment is success
+		CHECK((*it).from == "Yoona");
+		CHECK((*it).to == "Taeyeon");
+		CHECK((*it).weight == 818);
+	}
+
+	SECTION("Traveral --()") {
+		// Expected output
+		auto const exp = std::vector<gdwg::graph<std::string, int>::value_type>{
+		   {"Tzuyu", "Taeyeon", 1314},
+		   {"Yoona", "Taeyeon", 818},
+		   {"Yoona", "Yoona", 530},
+		};
+
+		// Increment to point the last element
+		auto last_element_it = g_const.begin();
+		++last_element_it;
+		++last_element_it;
+
+		// Iterate the graph backwardly
+		auto count = std::size_t{2};
+		auto it = last_element_it;
+		for (; it != g_const.begin(); --it, --count) {
+			CHECK((*it).from == exp[count].from);
+			CHECK((*it).to == exp[count].to);
+			CHECK((*it).weight == exp[count].weight);
+		}
+
+		CHECK((*it).from == exp[count].from);
+		CHECK((*it).to == exp[count].to);
+		CHECK((*it).weight == exp[count].weight);
+	}
+
+	SECTION("Traveral --(int)") {
+		// Let the iterator points to the last element
+		auto it = g_const.begin();
+		++it;
+		++it;
+
+		// Post decrement and check if the iterator returned is correct
+		auto last_element_it = it--;
+		CHECK((*last_element_it).from == "Yoona");
+		CHECK((*last_element_it).to == "Yoona");
+		CHECK((*last_element_it).weight == 530);
+
+		// Check if decrement is success
+		CHECK((*it).from == "Yoona");
+		CHECK((*it).to == "Taeyeon");
+		CHECK((*it).weight == 818);
+	}
+
+	SECTION("Comparision") {
+		SECTION("Value constructed iterator are equal") {
+			CHECK(gdwg::graph<std::string, int>::iterator() == gdwg::graph<std::string, int>::iterator());
+		}
+
+		SECTION("Test if true on equal iterator") {
+			auto it = g_const.begin();
+			CHECK(g_const.begin() == g_const.find("Tzuyu", "Taeyeon", 1314));
+
+			++it;
+			CHECK(it == g_const.find("Yoona", "Taeyeon", 818));
+
+			++it;
+			CHECK(it == g_const.find("Yoona", "Yoona", 530));
+
+			++it;
+			CHECK(it == g_const.end());
+		}
+
+		SECTION("Test if false on not equal iterator") {
+			auto it = g_const.begin();
+			CHECK_FALSE(it == g_const.end());
+			CHECK_FALSE(++it == g_const.end());
+			CHECK_FALSE(++it == g_const.end());
+			CHECK_FALSE(--it == g_const.end());
+			CHECK_FALSE(--it == g_const.end());
+		}
+	}
 }
