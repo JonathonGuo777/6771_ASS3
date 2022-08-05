@@ -236,12 +236,12 @@ namespace gdwg {
 
 		[[nodiscard]] auto is_connected(N const& src, N const& dst) const -> bool {
 			if (is_node(src) and is_node(dst)) {
-				auto connection = std::find_if(std::cbegin(edges_),
-				                               std::cend(edges_),
+				auto connection = std::find_if(edges_.begin(),
+				                               edges_.end(),
 				                               [src, dst](std::shared_ptr<edge> x) {
-					                               return (*(x->from) == src and *(x->to) == dst);
+					                               return (*(x->src) == src and *(x->dst) == dst);
 				                               });
-				return connection != std::cend(edges_);
+				return connection != edges_.end();
 
 			}
 			throw std::runtime_error("Cannot call gdwg::graph<N, E>::is_connected if src or dst node "
