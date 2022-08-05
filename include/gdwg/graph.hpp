@@ -193,7 +193,6 @@ namespace gdwg {
 					return true;
 				}
 				return false;
-
 			}
 			throw std::runtime_error("Cannot call gdwg::graph<N, E>::erase_edge on src or dst if they "
 			                         "don't exist in the graph");
@@ -201,11 +200,6 @@ namespace gdwg {
 
 		/* Remove an edge pointed by i, return iterator of element after i. Constant */
 		auto erase_edge(iterator i) -> iterator {
-			// Check if exist
-			if (i == end() or i == iterator{}) {
-				return end();
-			}
-
 			return iterator{edges_.erase(i.it_)};
 		}
 
