@@ -77,13 +77,8 @@ namespace gdwg {
 			if (this == std::addressof(other)) {
 				return *this;
 			}
-
-			swap(*this, other);
-
-			// Clear the moved from graph
-			other.nodes_.clear();
-			other.edges_.clear();
-
+			std::swap(nodes_, other.nodes_);
+			std::swap(nodes_, other.nodes_);
 			return *this;
 		}
 
