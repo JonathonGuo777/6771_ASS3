@@ -35,36 +35,25 @@ namespace gdwg {
 		// Constructors
 		graph() noexcept = default;
 
-		graph(std::initializer_list<N> il)
-		: graph(il.begin(), il.end()) {}
+		graph(std::initializer_list<N> il){
+			*this = graph(il.begin(), il.end());
+		}
 
 		template<typename InputIt>
-		graph(InputIt first, InputIt last)
-		: graph() {
-			std::transform(first, last, std::inserter(nodes_, nodes_.end()), [](auto const& n) {
-				return std::make_shared<N>(n);
-			});
+		graph(InputIt first, InputIt last){
+			for (auto& it = first; it != last; ++it) {
+				nodes_.emplace(std::make_shared<N>(*it));
+			}
 		}
 
 		// Copy Constructor
-		graph(graph const& other)
-		: graph() {
-			std::transform(other.nodes_.begin(),
-			               other.nodes_.end(),
-			               std::inserter(nodes_, nodes_.end()),
-			               // Make a copy
-			               [&](auto const& n_ptr) { return std::make_shared<N>(*n_ptr); });
-
-			std::transform(other.edges_.begin(),
-			               other.edges_.end(),
-			               std::inserter(edges_, edges_.end()),
-			               // Find the ptr of the nodes created, avoid duplication
-			               [&](auto const& e_ptr) {
-				               struct edge new_edge = edge{(*(nodes_.find(*(e_ptr->src)))).get(),
-				                                           (*(nodes_.find(*(e_ptr->dst)))).get(),
-				                                           e_ptr->weight};
-				               return std::make_shared<edge>(new_edge);
-			               });
+		graph(graph const& other){
+			for (auto& it : other.nodes_) {
+				nodes_.emplace(std::make_shared<N>(*it));
+			}
+			for (auto& it : other.edges_) {
+				edges_.emplace(std::make_shared<edge>(*it));
+			}
 		}
 
 		// Move Constructor
@@ -74,8 +63,11 @@ namespace gdwg {
 
 		// Copy Assignment
 		auto operator=(graph const& other) -> graph& {
-			auto copy = graph(other);
-			swap(*this, copy);
+			if (this == &other) {
+				return *this;
+			}
+			auto obj = graph(other);
+			swap(*this, obj);
 			return *this;
 		}
 
