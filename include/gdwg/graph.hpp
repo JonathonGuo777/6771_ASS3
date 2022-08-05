@@ -87,14 +87,13 @@ namespace gdwg {
 		}
 
 		auto insert_edge(N const& src, N const& dst, E const& weight) -> bool {
-			if (is_node(src) and is_node(dst)) {
-				return edges_.emplace(
-				                std::make_shared<edge>(
-				                   edge{*nodes_.find(src), *nodes_.find(dst), weight})).second;
-
+			if (not is_node(src) or not is_node(dst)) {
+				throw std::runtime_error("Cannot call gdwg::graph<N, E>::insert_edge when either src "
+				                         "or dst node does not exist");
 			}
-			throw std::runtime_error("Cannot call gdwg::graph<N, E>::insert_edge when either src "
-			                         "or dst node does not exist");
+
+			struct edge new_edge = {(*(nodes_.find(src))).get(), (*(nodes_.find(dst))).get(), weight};
+			return edges_.emplace(std::make_shared<edge>(new_edge)).second;
 		}
 
 		auto replace_node(N const& old_data, N const& new_data) -> bool {
