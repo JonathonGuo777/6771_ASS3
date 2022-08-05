@@ -329,7 +329,7 @@ namespace gdwg {
 				return x < *y;
 			}
 		};
-
+		
 		// to be improved
 		struct edge_cmp {
 			using is_transparent = std::true_type;
@@ -376,15 +376,21 @@ namespace gdwg {
 
 		// Hidden Friend: Extractor
 		friend auto operator<<(std::ostream& os, graph const& g) -> std::ostream& {
-			std::for_each(g.nodes_.begin(), g.nodes_.end(), [&](auto const& it_node){
-				os << *it_node << "(\n";
-				std::for_each(g.edges_.begin(), g.edges_.end(), [&](auto const& it_edge){
-					if (*(it_edge->src) == *it_node) {
-						os << "  " << *(it_edge->dst)<<" | "<<it_edge->weight<<"\n";
+			auto oss = std::ostringstream{};
+
+//			std::for_each(g.nodes_.begin(), g.nodes_.end(), [&](auto const& node_it) 
+			for (auto const& node_it : g.nodes_)   {
+				oss << *node_it << " (\n";
+				for (auto const& edge_it : g.edges_) {
+					if (*(edge_it->src) == *node_it) {
+						oss << "  " << *(edge_it->dst) << " | " << edge_it->weight << "\n";
 					}
-				});
-				os << ")\n";
-			});
+				}
+				oss << ")\n";
+			}
+		   
+			os << oss.str();
+
 			return os;
 		}
 
