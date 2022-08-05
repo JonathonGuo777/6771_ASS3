@@ -89,8 +89,10 @@ namespace gdwg {
 		auto insert_edge(N const& src, N const& dst, E const& weight) -> bool {
 
 			if (is_node(src) and is_node(dst)) {
-				struct edge new_edge = {(*(nodes_.find(src))).get(), (*(nodes_.find(dst))).get(), weight};
-				return edges_.emplace(std::make_shared<edge>(new_edge)).second;
+//				struct edge new_edge = {(*(nodes_.find(src))).get(), (*(nodes_.find(dst))).get(), weight};
+				return edges_.emplace(
+				                std::make_shared<edge>(
+				                   {(*(nodes_.find(src))).get(), (*(nodes_.find(dst))).get(), weight})).second;
 
 			}
 			throw std::runtime_error("Cannot call gdwg::graph<N, E>::insert_edge when either src "
