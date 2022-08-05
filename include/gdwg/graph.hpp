@@ -40,7 +40,7 @@ namespace gdwg {
 
 		template<typename InputIt>
 		graph(InputIt first, InputIt last)
-		: graph() {
+		{
 			for (auto& it = first; it != last; ++it) {
 				nodes_.emplace(std::make_shared<N>(*it));
 			}
@@ -48,7 +48,7 @@ namespace gdwg {
 
 		// Copy Constructor
 		graph(graph const& other)
-		: graph() {
+		{
 			std::transform(other.nodes_.begin(),
 			               other.nodes_.end(),
 			               std::inserter(nodes_, nodes_.end()),
