@@ -67,13 +67,17 @@ namespace gdwg {
 				return *this;
 			}
 			auto obj = graph(other);
-			swap(*this, obj);
+//			swap(*this, obj);
+			std::swap(nodes_, obj.nodes_);
+			std::swap(edges_, obj.edges_);
 			return *this;
 		}
 
 		// Move Assignment
 		auto operator=(graph&& other) noexcept -> graph& {
-			swap(*this, other);
+//			swap(*this, other);
+			std::swap(nodes_, other.nodes_);
+			std::swap(edges_, other.edges_);
 			return *this;
 		}
 
