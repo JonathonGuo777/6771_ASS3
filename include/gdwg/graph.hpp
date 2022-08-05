@@ -74,7 +74,9 @@ namespace gdwg {
 		// Move Assignment
 		auto operator=(graph&& other) noexcept -> graph& {
 			// Check for self assignment
-			if (this == &&other) {
+			// get the address of other
+
+			if (*this == &other) {
 				return *this;
 			}
 			std::swap(nodes_, other.nodes_);
