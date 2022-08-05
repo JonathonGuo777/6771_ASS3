@@ -277,19 +277,17 @@ namespace gdwg {
 
 		// log (n) + e
 		[[nodiscard]] auto connections(N const& src) const -> std::vector<N> {
-			if (not is_node(src)) { // log(n)
-				throw std::runtime_error("Cannot call gdwg::graph<N, E>::connections if src doesn't "
-				                         "exist in the graph");
+			if (is_node(src)) {
+				auto v = std::vector<N>{};
+				std::for_each(edges_.begin(), edges_.end(), [&v, &src](auto const& it) {
+					if (*(it->src) == src) {
+						v.emplace_back(*(it->dst));
+					}
+				});
+				return v;
 			}
-
-			auto dsts = std::vector<N>();
-			for (auto const& edge_it : edges_) { // e
-				if (*(edge_it->src) == src) {
-					dsts.push_back(*(edge_it->dst));
-				}
-			}
-
-			return dsts;
+			throw std::runtime_error("Cannot call gdwg::graph<N, E>::connections if src doesn't "
+			                         "exist in the graph");
 		}
 
 		// Iterator
