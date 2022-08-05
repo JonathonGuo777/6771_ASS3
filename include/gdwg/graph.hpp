@@ -279,9 +279,9 @@ namespace gdwg {
 		[[nodiscard]] auto connections(N const& src) const -> std::vector<N> {
 			if (is_node(src)) {
 				auto v = std::vector<N>{};
-				std::for_each(edges_.begin(), edges_.end(), [&v, &src](auto const& it) {
-					if (*(it->src) == src) {
-						v.emplace_back(*(it->dst));
+				std::for_each(edges_.begin(), edges_.end(), [&v, &src](auto const& edge_it) {
+					if (*(edge_it->src) == src) {
+						v.emplace_back(*(edge_it->dst));
 					}
 				});
 				return v;

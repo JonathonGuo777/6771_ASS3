@@ -327,8 +327,7 @@ namespace gdwg {
 		}
 
 		[[nodiscard]] auto operator==(graph const& other) const -> bool {
-			if (std::size(other.nodes_) == std::size(nodes_)
-			    and std::size(other.edges_) == std::size(edges_)) {
+			if (other.nodes_.size() == nodes_.size() and other.edges_.size() == edges_.size()) {
 				auto node_equality = std::equal(
 				   std::cbegin(nodes_),
 				   std::cend(nodes_),
