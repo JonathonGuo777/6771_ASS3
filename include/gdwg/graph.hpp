@@ -198,8 +198,8 @@ namespace gdwg {
 		/* Remove an edge pointed by i, return iterator of element after i. Constant */
 		auto erase_edge(iterator i) -> iterator {
 			// Check if exist
-			if (i == iterator{}.end() or i == iterator{}) {
-				return iterator{}.end();
+			if (i == end() or i == iterator{}) {
+				return end();
 			}
 			return iterator{edges_.erase(i.iter_)};
 		}
