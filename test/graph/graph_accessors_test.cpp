@@ -72,7 +72,8 @@ TEST_CASE("Find") {
 	g1.insert_edge(2, 1, 8);
 
 	CHECK(g1.find(1, 2, 5) == g1.begin());
-	CHECK(g1.find(99, 99, 99) == g1.end());
+	CHECK(g1.find(2, 3, 6) == g1.end());
+	CHECK(g1.find(22, 33, 44) == g1.end());
 }
 
 TEST_CASE("Connection") {
@@ -86,8 +87,8 @@ TEST_CASE("Connection") {
 	g1.insert_edge(2, 2, 9);
 	g1.insert_edge(2, 2, 10);
 
-	CHECK(g1.connections(2) == std::vector<int>{1, 2});
-	CHECK(g1.connections(1) == std::vector<int>{2});
+	CHECK(g1.connections(2) == std::vector<int>{1,1,2,2});
+	CHECK(g1.connections(1) == std::vector<int>{2,2});
 
 	CHECK_THROWS(g1.connections(99));
 }
