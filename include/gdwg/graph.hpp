@@ -3,7 +3,6 @@
 
 #include <algorithm>
 #include <cassert>
-//#include <experimental/iterator>
 #include <initializer_list>
 #include <iostream>
 #include <iterator>
@@ -95,51 +94,46 @@ namespace gdwg {
 			                         "or dst node does not exist");
 		}
 
+
 		// to be improved
 		auto replace_node(N const& old_data, N const& new_data) -> bool {
-			auto old_it = nodes_.find(old_data);
-			if (old_it == std::end(nodes_)) {
-				throw std::runtime_error("Cannot call gdwg::graph<N, E>::replace_node on a node that "
-				                         "doesn't exist");
+			auto old_iter = nodes_.find(old_data);
+			if (old_iter != std::end(nodes_)){
+				if (is_node(new_data)) {
+					return false;
+				}
+				// Insert the new node
+				auto new_node = std::make_shared<N>(new_data);
+				nodes_.emplace(new_node);
+				// Find all relevant edges
+				auto edge_ptrs = std::vector<std::shared_ptr<edge>>();
+				std::copy_if(edges_.begin(),
+				             edges_.end(),
+				             std::back_inserter(edge_ptrs),
+				             [&](auto const& edge_it) {
+					             return *(edge_it->src) == old_data or *(edge_it->dst) == old_data;
+				             });
+				// Replace the nodes
+				for (auto const& edge_it : edge_ptrs) {
+					auto new_src_ptr = *(edge_it->src) == old_data ? new_node.get() : edge_it->src;
+					auto new_dst_ptr = *(edge_it->dst) == old_data ? new_node.get() : edge_it->dst;
+					// Insert new and remove old
+					edges_.emplace(std::make_shared<edge>(edge{new_src_ptr, new_dst_ptr, edge_it->weight}));
+					edges_.erase(edge_it);
+				}
+				// erase old node
+				nodes_.erase(old_iter);
+				return true;
 			}
-			if (is_node(new_data)) {
-				return false;
-			}
-
-			// Insert the new node
-			auto new_node = std::make_shared<N>(new_data);
-			nodes_.emplace(new_node);
-
-			// Find all relevant edges
-			auto edge_ptrs = std::vector<std::shared_ptr<edge>>();
-			std::copy_if(edges_.begin(),
-			             edges_.end(),
-			             std::back_inserter(edge_ptrs),
-			             [&](auto const& edge_it) {
-				             return *(edge_it->src) == old_data or *(edge_it->dst) == old_data;
-			             });
-
-			// Replace the nodes
-			for (auto const& edge_it : edge_ptrs) {
-				auto new_src_ptr = *(edge_it->src) == old_data ? new_node.get() : edge_it->src;
-				auto new_dst_ptr = *(edge_it->dst) == old_data ? new_node.get() : edge_it->dst;
-
-				// Insert new and remove old
-				edges_.emplace(std::make_shared<edge>(edge{new_src_ptr, new_dst_ptr, edge_it->weight}));
-				edges_.erase(edge_it);
-			}
-
-			// Erase the old node
-			nodes_.erase(old_it);
-
-			return true;
+			throw std::runtime_error("Cannot call gdwg::graph<N, E>::replace_node on a node that "
+			                         "doesn't exist");
 		}
 
 		// to be improved
 		auto merge_replace_node(N const& old_data, N const& new_data) -> void {
-			auto old_it = nodes_.find(old_data);
-			auto new_it = nodes_.find(new_data);
-			if (old_it == nodes_.end() or new_it == nodes_.end()) {
+			auto old_iter = nodes_.find(old_data);
+			auto new_iter = nodes_.find(new_data);
+			if (old_iter == nodes_.end() or new_iter == nodes_.end()) {
 				throw std::runtime_error("Cannot call gdwg::graph<N, E>::merge_replace_node on old or "
 				                         "new data if they don't exist in the graph");
 			}
@@ -154,8 +148,8 @@ namespace gdwg {
 
 			// Merge the nodes
 			for (auto const& edge_it : edge_ptrs) {
-				auto new_src_ptr = *(edge_it->src) == old_data ? (*new_it).get() : edge_it->src;
-				auto new_dst_ptr = *(edge_it->dst) == old_data ? (*new_it).get() : edge_it->dst;
+				auto new_src_ptr = *(edge_it->src) == old_data ? (*new_iter).get() : edge_it->src;
+				auto new_dst_ptr = *(edge_it->dst) == old_data ? (*new_iter).get() : edge_it->dst;
 
 				struct edge new_edge = edge{new_src_ptr, new_dst_ptr, edge_it->weight};
 				edges_.erase(edge_it);
@@ -167,7 +161,7 @@ namespace gdwg {
 			}
 
 			// Remove the old node
-			nodes_.erase(old_it);
+			nodes_.erase(old_iter);
 		}
 
 		/* Remove a node and all relevant edges */
@@ -180,7 +174,7 @@ namespace gdwg {
 			return false;
 		}
 
-		/* Erase node: log(n) + e */
+		// log(n) + e
 		auto erase_edge(N const& src, N const& dst, E const& weight) -> bool {
 			if (is_node(src) and is_node(dst)){
 				auto it = std::find_if(edges_.begin(), edges_.end(),
@@ -320,7 +314,7 @@ namespace gdwg {
 			}
 		};
 		
-		// to be improved
+
 		struct edge_cmp {
 			using is_transparent = void;
 
