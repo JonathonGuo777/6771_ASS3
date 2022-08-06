@@ -143,7 +143,6 @@ namespace gdwg {
 				throw std::runtime_error("Cannot call gdwg::graph<N, E>::merge_replace_node on old or "
 				                         "new data if they don't exist in the graph");
 			}
-
 			// Find all relevant nodes
 			auto edge_ptrs = std::vector<std::shared_ptr<edge>>();
 			std::copy_if(edges_.begin(),

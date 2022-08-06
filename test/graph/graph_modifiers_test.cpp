@@ -203,7 +203,7 @@ TEST_CASE("Replace Node") {
 
 TEST_CASE("Merge replace node") {
 	SECTION("simple edge") {
-		auto g1 = gdwg::graph<int, int>{1, 2, 23};
+		auto g1 = gdwg::graph<int, int>{1, 2, 3};
 
 		g1.insert_edge(2, 1, 7);
 		g1.insert_edge(1, 2, 6);
@@ -215,9 +215,9 @@ TEST_CASE("Merge replace node") {
 
 		CHECK(g1.weights(2, 2) == std::vector<int>{5, 6, 7, 8});
 
-		g1.merge_replace_node(2, 23);
+		g1.merge_replace_node(2, 3);
 
-		CHECK(g1.weights(23, 23) == std::vector<int>{5, 6, 7, 8});
+		CHECK(g1.weights(3, 3) == std::vector<int>{5, 6, 7, 8});
 
 		// no src, no dst, or both
 		CHECK_THROWS(g1.merge_replace_node(2, 99));
@@ -226,7 +226,7 @@ TEST_CASE("Merge replace node") {
 	}
 
 	SECTION("With reflexive edge") {
-		auto g2 = gdwg::graph<int, int>{1, 2, 23};
+		auto g2 = gdwg::graph<int, int>{1, 2, 3};
 		g2.insert_edge(1, 1, 7);
 		g2.insert_edge(2, 2, 7);
 
