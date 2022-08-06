@@ -154,56 +154,56 @@ TEST_CASE("Erase edge: (iterator i, iterator s)") {
 
 
 TEST_CASE("Replace Node") {
-	auto g = gdwg::graph<std::string, int>{"Yoona", "Taeyeon", "Tzuyu"};
+	auto g = gdwg::graph<int, int>{1, 2, 3};
 
 	SECTION("Simple case: If node are replaced") {
-		CHECK(g.replace_node("Yoona", "Rose"));
+		CHECK(g.replace_node(1, 99));
 
-		CHECK(g.is_node("Rose"));
-		CHECK_FALSE(g.is_node("Yoona"));
+		CHECK(g.is_node(99));
+		CHECK_FALSE(g.is_node(1));
 	}
 
 	SECTION("Hard case: If edges are also replaced") {
-		CHECK(g.insert_edge("Yoona", "Taeyeon", 818));
-		CHECK(g.insert_edge("Taeyeon", "Yoona", 1314));
-		CHECK(g.insert_edge("Yoona", "Yoona", 530));
-		CHECK(g.insert_edge("Yoona", "Yoona", 1314));
+		CHECK(g.insert_edge(1, 2, 818));
+		CHECK(g.insert_edge(2, 1, 1314));
+		CHECK(g.insert_edge(1, 1, 530));
+		CHECK(g.insert_edge(1, 1, 1314));
 
-		CHECK(g.replace_node("Yoona", "Rose"));
+		CHECK(g.replace_node(1, 99));
 
 		// Check that the edges no longer exist
-		CHECK(g.find("Yoona", "Taeyeon", 818) == g.end());
-		CHECK(g.find("Taeyeon", "Yoona", 1314) == g.end());
-		CHECK(g.find("Yoona", "Yoona", 530) == g.end());
-		CHECK(g.find("Yoona", "Yoona", 1314) == g.end());
+		CHECK(g.find(1, 2, 818) == g.end());
+		CHECK(g.find(2, 1, 1314) == g.end());
+		CHECK(g.find(1, 1, 530) == g.end());
+		CHECK(g.find(1, 1, 1314) == g.end());
 
 		// Check that the old node doesn't exist, and new node exist
-		CHECK(g.is_node("Rose"));
-		CHECK_FALSE(g.is_node("Yoona"));
+		CHECK(g.is_node(99));
+		CHECK_FALSE(g.is_node(1));
 
 		// Check we have these edges
-		CHECK(g.find("Rose", "Taeyeon", 818) != g.end());
-		CHECK(g.find("Taeyeon", "Rose", 1314) != g.end());
-		CHECK(g.find("Rose", "Rose", 530) != g.end());
-		CHECK(g.find("Rose", "Rose", 1314) != g.end());
+		CHECK(g.find(99, 2, 818) != g.end());
+		CHECK(g.find(2, 99, 1314) != g.end());
+		CHECK(g.find(99, 99, 530) != g.end());
+		CHECK(g.find(99, 99, 1314) != g.end());
 	}
 
 	SECTION("new_data already exist") {
-		CHECK_FALSE(g.replace_node("Yoona", "Taeyeon"));
+		CHECK_FALSE(g.replace_node(1, 2));
 
-		CHECK(g.is_node("Yoona"));
-		CHECK(g.is_node("Taeyeon"));
+		CHECK(g.is_node(1));
+		CHECK(g.is_node(2));
 	}
 
 	SECTION("Exception: is_node(old_data) == false") {
 		// src, dst not exist
-		CHECK_THROWS_MATCHES(g.replace_node("Yeonwoo", "Mina"),
+		CHECK_THROWS_MATCHES(g.replace_node(77, 88),
 		                     std::runtime_error,
 		                     Catch::Matchers::Message("Cannot call gdwg::graph<N, E>::replace_node "
 		                                              "on a node that doesn't exist"));
 
 		// src not exist, dst exist
-		CHECK_THROWS_MATCHES(g.replace_node("Yeonwoo", "Taeyeon"),
+		CHECK_THROWS_MATCHES(g.replace_node(77, 2),
 		                     std::runtime_error,
 		                     Catch::Matchers::Message("Cannot call gdwg::graph<N, E>::replace_node "
 		                                              "on a node that doesn't exist"));
