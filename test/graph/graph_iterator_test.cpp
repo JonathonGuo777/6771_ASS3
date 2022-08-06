@@ -1,7 +1,8 @@
 #include "gdwg/graph.hpp"
-
 #include <catch2/catch.hpp>
 #include <vector>
+
+
 
 TEST_CASE("Empty") {
 	auto const g_empty = gdwg::graph<std::string, int>{};

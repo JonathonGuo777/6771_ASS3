@@ -1,6 +1,8 @@
 #include "gdwg/graph.hpp"
 
 #include <catch2/catch.hpp>
+
+#include <vector>
 #include <iostream>
 #include <iterator>
 #include <set>
@@ -8,7 +10,7 @@
 #include <stdexcept>
 #include <string>
 #include <string_view>
-#include <vector>
+
 
 
 TEST_CASE("Comparisons") {

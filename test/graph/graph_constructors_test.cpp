@@ -3,8 +3,6 @@
 #include <catch2/catch.hpp>
 
 
-
-
 TEST_CASE("Default") {
 	auto g = gdwg::graph<int, std::string>{};
 	CHECK(g.empty());

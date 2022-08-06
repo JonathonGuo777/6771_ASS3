@@ -7,30 +7,6 @@
 #IncludeRegexTransform: 
 
 ../include/gdwg/graph.hpp
-algorithm
--
-cassert
--
-experimental/iterator
--
-initializer_list
--
-iostream
--
-iterator
--
-memory
--
-set
--
-sstream
--
-tuple
--
-utility
--
-vector
--
 
 ../test/catch2/catch.hpp
 TargetConditionals.h
