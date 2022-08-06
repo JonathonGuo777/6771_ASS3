@@ -201,51 +201,40 @@ TEST_CASE("Replace Node") {
 
 }
 
+TEST_CASE("Merge replace node") {
+	SECTION("simple edge") {
+		auto g1 = gdwg::graph<int, int>{1, 2, 23};
 
-TEST_CASE("merge_replace_node test") {
-	SECTION("merge_replace_node without reflexive edge") {
-		auto g1 = gdwg::graph<int, int>{23, 31, 71};
+		g1.insert_edge(2, 1, 7);
+		g1.insert_edge(1, 2, 6);
+		g1.insert_edge(1, 2, 5);
+		g1.insert_edge(2, 1, 8);
 
-		g1.insert_edge(31, 23, 7);
-		g1.insert_edge(23, 31, 6);
-		g1.insert_edge(23, 31, 5);
-		g1.insert_edge(31, 23, 8);
 
-		CHECK_THROWS(g1.merge_replace_node(31, 99));
-		CHECK_THROWS(g1.merge_replace_node(99, 23));
+		g1.merge_replace_node(1, 2);
 
-		g1.merge_replace_node(23, 31);
+		CHECK(g1.weights(2, 2) == std::vector<int>{5, 6, 7, 8});
 
-		CHECK(g1.weights(31, 31) == std::vector<int>{5, 6, 7, 8});
+		g1.merge_replace_node(2, 23);
 
-		g1.merge_replace_node(31, 71);
+		CHECK(g1.weights(23, 23) == std::vector<int>{5, 6, 7, 8});
 
-		CHECK(g1.weights(71, 71) == std::vector<int>{5, 6, 7, 8});
+		// no src, no dst, or both
+		CHECK_THROWS(g1.merge_replace_node(2, 99));
+		CHECK_THROWS(g1.merge_replace_node(99, 1));
+		CHECK_THROWS(g1.merge_replace_node(55, 66));
 	}
 
-	SECTION("merge_replace_node with reflexive edge") {
-		auto g2 = gdwg::graph<int, int>{23, 31, 71};
-		g2.insert_edge(23, 23, 7);
-		g2.insert_edge(31, 31, 7);
+	SECTION("With reflexive edge") {
+		auto g2 = gdwg::graph<int, int>{1, 2, 23};
+		g2.insert_edge(1, 1, 7);
+		g2.insert_edge(2, 2, 7);
 
-		g2.merge_replace_node(23, 31);
+		g2.merge_replace_node(1, 2);
 
-		CHECK(g2.weights(31, 31) == std::vector<int>{7});
+		CHECK(g2.weights(2, 2) == std::vector<int>{7});
 	}
 
-	SECTION("merge_replace_node with string and int") {
-		auto g3 = gdwg::graph<std::string, int>{"a", "b", "c", "d"};
-		g3.insert_edge("a", "b", 1);
-		g3.insert_edge("a", "c", 2);
-		g3.insert_edge("a", "d", 3);
-		g3.insert_edge("b", "b", 1);
-
-		g3.merge_replace_node("a", "b");
-
-		CHECK(g3.weights("b", "b") == std::vector<int>{1});
-		CHECK(g3.weights("b", "c") == std::vector<int>{2});
-		CHECK(g3.weights("b", "d") == std::vector<int>{3});
-	}
 }
 
 
