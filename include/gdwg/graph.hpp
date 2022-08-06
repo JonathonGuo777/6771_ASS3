@@ -197,7 +197,6 @@ namespace gdwg {
 		}
 
 		auto erase_edge(iterator i) -> iterator {
-			// Check if exist
 			if (i == end() or i == iterator{}) {
 				return end();
 			}
