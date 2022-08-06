@@ -191,8 +191,8 @@ namespace gdwg {
 //				if (*(e_ptr->dst) == old_data) {
 //					new_dst_ptr = (*new_iter).get();
 //				}
-				auto new_src_ptr = *(e_ptr->src) == old_data ? (*new_it).get() : e_ptr->src;
-				auto new_dst_ptr = *(e_ptr->dst) == old_data ? (*new_it).get() : e_ptr->dst;
+				auto new_src_ptr = *(e_ptr->src) == old_data ? (*new_iter).get() : e_ptr->src;
+				auto new_dst_ptr = *(e_ptr->dst) == old_data ? (*new_iter).get() : e_ptr->dst;
 				struct edge new_edge = edge{new_src_ptr, new_dst_ptr, e_ptr->weight};
 				edges_.erase(e_ptr);
 
