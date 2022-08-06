@@ -95,17 +95,17 @@ namespace gdwg {
 		}
 
 
-		// to be improved
+		// relalce node
 		auto replace_node(N const& old_data, N const& new_data) -> bool {
 			auto old_iter = nodes_.find(old_data);
 			if (old_iter != std::end(nodes_)){
 				if (is_node(new_data)) {
 					return false;
 				}
-				// Insert the new node
+				// insert new
 				auto new_node = std::make_shared<N>(new_data);
 				nodes_.emplace(new_node);
-				// Find all relevant edges
+				// save all relevant edges
 				auto edge_ptrs = std::vector<std::shared_ptr<edge>>();
 				std::copy_if(edges_.begin(),
 				             edges_.end(),
@@ -113,11 +113,11 @@ namespace gdwg {
 				             [&](auto const& edge_it) {
 					             return *(edge_it->src) == old_data or *(edge_it->dst) == old_data;
 				             });
-				// Replace the nodes
+				// replace the nodes
 				for (auto const& edge_it : edge_ptrs) {
 					auto new_src_ptr = *(edge_it->src) == old_data ? new_node.get() : edge_it->src;
 					auto new_dst_ptr = *(edge_it->dst) == old_data ? new_node.get() : edge_it->dst;
-					// Insert new and remove old
+					// insert new and remove old
 					edges_.emplace(std::make_shared<edge>(edge{new_src_ptr, new_dst_ptr, edge_it->weight}));
 					edges_.erase(edge_it);
 				}
@@ -129,42 +129,41 @@ namespace gdwg {
 			                         "doesn't exist");
 		}
 
-		// to be improved
+		// merge replace node
 		auto merge_replace_node(N const& old_data, N const& new_data) -> void {
 			auto old_iter = nodes_.find(old_data);
 			auto new_iter = nodes_.find(new_data);
-			if (old_iter == nodes_.end() or new_iter == nodes_.end()) {
-				throw std::runtime_error("Cannot call gdwg::graph<N, E>::merge_replace_node on old or "
-				                         "new data if they don't exist in the graph");
-			}
-			// Find all relevant nodes
-			auto edge_ptrs = std::vector<std::shared_ptr<edge>>();
-			std::copy_if(edges_.begin(),
-			             edges_.end(),
-			             std::back_inserter(edge_ptrs),
-			             [&](auto const& edge_it) {
-				             return *(edge_it->src) == old_data or *(edge_it->dst) == old_data;
-			             });
+			if (old_iter != nodes_.end() and  new_iter != nodes_.end()){
+				// save all relevant nodes
+				auto edge_ptrs = std::vector<std::shared_ptr<edge>>();
+				std::copy_if(edges_.begin(),
+				             edges_.end(),
+				             std::back_inserter(edge_ptrs),
+				             [&](auto const& edge_it) {
+					             return *(edge_it->src) == old_data or *(edge_it->dst) == old_data;
+				             });
 
-			// Merge the nodes
-			for (auto const& edge_it : edge_ptrs) {
-				auto new_src_ptr = *(edge_it->src) == old_data ? (*new_iter).get() : edge_it->src;
-				auto new_dst_ptr = *(edge_it->dst) == old_data ? (*new_iter).get() : edge_it->dst;
+				// Replace the nodes
+				for (auto const& edge_it : edge_ptrs) {
+					auto new_src_ptr = *(edge_it->src) == old_data ? (*new_iter).get() : edge_it->src;
+					auto new_dst_ptr = *(edge_it->dst) == old_data ? (*new_iter).get() : edge_it->dst;
 
-				struct edge new_edge = edge{new_src_ptr, new_dst_ptr, edge_it->weight};
-				edges_.erase(edge_it);
+					struct edge new_edge = edge{new_src_ptr, new_dst_ptr, edge_it->weight};
+					edges_.erase(edge_it);
 
-				// If the new edge not exist, insert it
-				if (edges_.find(new_edge) == edges_.end()) {
-					edges_.emplace(std::make_shared<edge>(new_edge));
+					// check if edge already exists
+					if (edges_.find(new_edge) == edges_.end()) {
+						edges_.emplace(std::make_shared<edge>(new_edge));
+					}
 				}
+				// remove old
+				nodes_.erase(old_iter);
 			}
-
-			// Remove the old node
-			nodes_.erase(old_iter);
+			throw std::runtime_error("Cannot call gdwg::graph<N, E>::merge_replace_node on old or "
+			                         "new data if they don't exist in the graph");
 		}
 
-		/* Remove a node and all relevant edges */
+
 		auto erase_node(N const& value) -> bool {
 			if (is_node(value)) {
 				std::erase_if(edges_, [&](auto const& ed) { return *(ed->src) == value or *(ed->dst) == value; });
