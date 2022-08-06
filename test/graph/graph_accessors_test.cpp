@@ -1,265 +1,93 @@
 #include "gdwg/graph.hpp"
-
 #include <catch2/catch.hpp>
-#include <iostream>
-#include <iterator>
-#include <set>
-#include <sstream>
-#include <stdexcept>
-#include <string>
-#include <string_view>
+#include <vector>
 
-TEST_CASE("Test for a bunch of accessor functions") {
-	auto g = gdwg::graph<std::string, int>{"Yoona", "Taeyeon", "Tzuyu"};
-	g.insert_edge("Yoona", "Taeyeon", 818);
-	g.insert_edge("Yoona", "Yoona", 530);
-	g.insert_edge("Tzuyu", "Taeyeon", 1314);
+TEST_CASE("Is node") {
+	auto g = gdwg::graph<int, std::string>{1,2,3};
 
-	auto const g_copy_const = g;
+	CHECK(g.is_node(1));
+	CHECK(!g.is_node(10));
+}
 
-	SECTION("Non-const is_node()") {
-		CHECK(g.is_node("Yoona"));
-		CHECK(g.is_node("Taeyeon"));
-		CHECK(g.is_node("Tzuyu"));
+TEST_CASE("Empty") {
+	auto g1 = gdwg::graph<int, std::string>();
+	auto g2 = gdwg::graph<int, std::string>{1};
 
-		CHECK_FALSE(g.is_node("Yeonwoo"));
+	CHECK(g1.empty());
+	CHECK(!g2.empty());
+}
+
+TEST_CASE("Is connected") {
+	auto g1 = gdwg::graph<int, int>{1, 2, 3};
+
+	g1.insert_edge(2, 1, 22);
+	g1.insert_edge(1, 2, 33);
+	g1.insert_edge(2, 3, 44);
+
+	CHECK(g1.is_connected(1, 2));
+	CHECK(!g1.is_connected(1, 1));
+
+	// no src or dst
+	CHECK_THROWS(g1.is_connected(99, 2));
+	CHECK_THROWS(g1.is_connected(1, 99));
+}
+
+TEST_CASE("nodes function test") {
+	SECTION("nodes function test use list constructor and compare to vector") {
+		auto v = std::vector<int>{0, 46, 47, 48};
+		auto g = gdwg::graph<int, std::string>{46, 47, 48, 0};
+		CHECK(v == g.nodes());
+		CHECK(g.nodes() == g.nodes());
 	}
 
-	SECTION("Const is_node()") {
-		CHECK(g_copy_const.is_node("Yoona"));
-		CHECK(g_copy_const.is_node("Taeyeon"));
-		CHECK(g_copy_const.is_node("Tzuyu"));
-
-		CHECK_FALSE(g_copy_const.is_node("Yeonwoo"));
+	SECTION("nodes function test use vector constructor and compare to that vector") {
+		auto v1 = std::vector<int>{0, 46, 47, 48, 78798};
+		auto g1 = gdwg::graph<int, std::string>(v1.begin(), v1.end());
+		CHECK(g1.nodes() == v1);
 	}
+}
 
-	SECTION("empty()") {
-		CHECK(gdwg::graph<std::string, int>{}.empty());
-		CHECK_FALSE(g.empty());
-		CHECK_FALSE(g_copy_const.empty());
-	}
+TEST_CASE("Weights") {
+	auto g1 = gdwg::graph<int, int>{1, 2, 3};
 
-	SECTION("is_connected()") {
-		SECTION("Non-const: Test has connection and no connection") {
-			CHECK(g.is_connected("Yoona", "Taeyeon"));
-			CHECK(g.is_connected("Yoona", "Yoona"));
-			CHECK(g.is_connected("Tzuyu", "Taeyeon"));
+	g1.insert_edge(1, 2, 6);
+	g1.insert_edge(1, 2, 5);
+	g1.insert_edge(2, 1, 8);
+	g1.insert_edge(2, 1, 7);
 
-			CHECK_FALSE(g.is_connected("Taeyeon", "Taeyeon"));
-			CHECK_FALSE(g.is_connected("Taeyeon", "Tzuyu"));
-		}
+	g1.insert_edge(2, 2, 9);
+	g1.insert_edge(2, 2, 10);
 
-		SECTION("Const: Test has connection and no connection") {
-			CHECK(g_copy_const.is_connected("Yoona", "Taeyeon"));
-			CHECK(g_copy_const.is_connected("Yoona", "Yoona"));
-			CHECK(g_copy_const.is_connected("Tzuyu", "Taeyeon"));
+	CHECK(g1.weights(1, 2) == std::vector<int>{5, 6});
+	CHECK(g1.weights(2, 1) == std::vector<int>{7, 8});
+	CHECK(g1.weights(2, 2) == std::vector<int>{9, 10});
+}
 
-			CHECK_FALSE(g_copy_const.is_connected("Taeyeon", "Taeyeon"));
-			CHECK_FALSE(g_copy_const.is_connected("Taeyeon", "Tzuyu"));
-		}
+TEST_CASE("Find") {
+	auto g1 = gdwg::graph<int, int>{1, 2, 3};
 
-		SECTION("Non-const Exception: either of is_node(src) or is_node(dst) are false") {
-			// src not exist
-			CHECK_THROWS_MATCHES(g.is_connected("Yeonwoo", "Tzuyu"),
-			                     std::runtime_error,
-			                     Catch::Matchers::Message("Cannot call gdwg::graph<N, "
-			                                              "E>::is_connected if src or dst node don't "
-			                                              "exist in the graph"));
+	g1.insert_edge(2, 1, 7);
+	g1.insert_edge(1, 2, 6);
+	g1.insert_edge(1, 2, 5);
+	g1.insert_edge(2, 1, 8);
 
-			// dst not exist
-			CHECK_THROWS_MATCHES(g.is_connected("Taeyeon", "Mina"),
-			                     std::runtime_error,
-			                     Catch::Matchers::Message("Cannot call gdwg::graph<N, "
-			                                              "E>::is_connected if src or dst node don't "
-			                                              "exist in the graph"));
+	CHECK(g1.find(1, 2, 5) == g1.begin());
+	CHECK(g1.find(99, 99, 99) == g1.end());
+}
 
-			// src, dst not exist
-			CHECK_THROWS_MATCHES(g.is_connected("Yeonwoo", "Mina"),
-			                     std::runtime_error,
-			                     Catch::Matchers::Message("Cannot call gdwg::graph<N, "
-			                                              "E>::is_connected if src or dst node don't "
-			                                              "exist in the graph"));
-		}
+TEST_CASE("Connection") {
+	auto g1 = gdwg::graph<int, int>{1, 2, 3};
 
-		SECTION("Const Exception: either of is_node(src) or is_node(dst) are false") {
-			// src not exist
-			CHECK_THROWS_MATCHES(g_copy_const.is_connected("Yeonwoo", "Tzuyu"),
-			                     std::runtime_error,
-			                     Catch::Matchers::Message("Cannot call gdwg::graph<N, "
-			                                              "E>::is_connected if src or dst node don't "
-			                                              "exist in the graph"));
+	g1.insert_edge(2, 1, 7);
+	g1.insert_edge(1, 2, 6);
+	g1.insert_edge(1, 2, 5);
+	g1.insert_edge(2, 1, 8);
 
-			// dst not exist
-			CHECK_THROWS_MATCHES(g_copy_const.is_connected("Taeyeon", "Mina"),
-			                     std::runtime_error,
-			                     Catch::Matchers::Message("Cannot call gdwg::graph<N, "
-			                                              "E>::is_connected if src or dst node don't "
-			                                              "exist in the graph"));
+	g1.insert_edge(2, 2, 9);
+	g1.insert_edge(2, 2, 10);
 
-			// src, dst not exist
-			CHECK_THROWS_MATCHES(g_copy_const.is_connected("Yeonwoo", "Mina"),
-			                     std::runtime_error,
-			                     Catch::Matchers::Message("Cannot call gdwg::graph<N, "
-			                                              "E>::is_connected if src or dst node don't "
-			                                              "exist in the graph"));
-		}
-	}
+	CHECK(g1.connections(2) == std::vector<int>{1, 2});
+	CHECK(g1.connections(1) == std::vector<int>{2});
 
-	SECTION("nodes") {
-		CHECK(gdwg::graph<std::string, int>{}.nodes().empty());
-		CHECK(g.nodes() == std::vector<std::string>{"Taeyeon", "Tzuyu", "Yoona"});
-		CHECK(g_copy_const.nodes() == std::vector<std::string>{"Taeyeon", "Tzuyu", "Yoona"});
-	}
-
-	SECTION("weights") {
-		SECTION("Check nodes with no connection") {
-			CHECK(g.weights("Taeyeon", "Tzuyu").empty());
-			CHECK(g.weights("Taeyeon", "Yoona").empty());
-
-			CHECK(g_copy_const.weights("Taeyeon", "Tzuyu").empty());
-			CHECK(g_copy_const.weights("Taeyeon", "Yoona").empty());
-		}
-
-		SECTION("Check if the weights are in the right order") {
-			g.insert_edge("Yoona", "Yoona", 250);
-			g.insert_edge("Yoona", "Taeyeon", 1000);
-			g.insert_edge("Yoona", "Taeyeon", 530);
-
-			CHECK(g.weights("Yoona", "Yoona") == std::vector<int>{250, 530});
-			CHECK(g.weights("Yoona", "Taeyeon") == std::vector<int>{530, 818, 1000});
-
-			// Check const
-			auto const g_const = g;
-
-			CHECK(g_const.weights("Yoona", "Yoona") == std::vector<int>{250, 530});
-			CHECK(g_const.weights("Yoona", "Taeyeon") == std::vector<int>{530, 818, 1000});
-		}
-
-		SECTION("Non-const Exception: either of is_node(src) or is_node(dst) are false") {
-			// src not exist
-			CHECK_THROWS_MATCHES(g.weights("Yeonwoo", "Tzuyu"),
-			                     std::runtime_error,
-			                     Catch::Matchers::Message("Cannot call gdwg::graph<N, E>::weights if "
-			                                              "src or dst node don't exist in the graph"));
-
-			// dst not exist
-			CHECK_THROWS_MATCHES(g.weights("Taeyeon", "Mina"),
-			                     std::runtime_error,
-			                     Catch::Matchers::Message("Cannot call gdwg::graph<N, E>::weights if "
-			                                              "src or dst node don't exist in the graph"));
-
-			// src, dst not exist
-			CHECK_THROWS_MATCHES(g.weights("Yeonwoo", "Mina"),
-			                     std::runtime_error,
-			                     Catch::Matchers::Message("Cannot call gdwg::graph<N, E>::weights if "
-			                                              "src or dst node don't exist in the graph"));
-		}
-
-		SECTION("Const Exception: either of is_node(src) or is_node(dst) are false") {
-			// src not exist
-			CHECK_THROWS_MATCHES(g_copy_const.weights("Yeonwoo", "Tzuyu"),
-			                     std::runtime_error,
-			                     Catch::Matchers::Message("Cannot call gdwg::graph<N, E>::weights if "
-			                                              "src or dst node don't exist in the graph"));
-
-			// dst not exist
-			CHECK_THROWS_MATCHES(g_copy_const.weights("Taeyeon", "Mina"),
-			                     std::runtime_error,
-			                     Catch::Matchers::Message("Cannot call gdwg::graph<N, E>::weights if "
-			                                              "src or dst node don't exist in the graph"));
-
-			// src, dst not exist
-			CHECK_THROWS_MATCHES(g_copy_const.weights("Yeonwoo", "Mina"),
-			                     std::runtime_error,
-			                     Catch::Matchers::Message("Cannot call gdwg::graph<N, E>::weights if "
-			                                              "src or dst node don't exist in the graph"));
-		}
-	}
-
-	SECTION("find()") {
-		SECTION("Non-const: Edge not exist") {
-			CHECK(g.find("Yoona", "Tzuyu", 100) == g.end());
-			CHECK(g.find("Yoona", "Yoona", 520) == g.end());
-			CHECK(g.find("Yeonwoo", "Tzuyu", 100) == g.end());
-			CHECK(g.find("Yeonwoo", "Mina", 100) == g.end());
-		}
-
-		SECTION("Const: Edge not exist") {
-			CHECK(g_copy_const.find("Yoona", "Tzuyu", 100) == g_copy_const.end());
-			CHECK(g_copy_const.find("Yoona", "Yoona", 520) == g_copy_const.end());
-			CHECK(g_copy_const.find("Yeonwoo", "Tzuyu", 100) == g_copy_const.end());
-			CHECK(g_copy_const.find("Yeonwoo", "Mina", 100) == g_copy_const.end());
-		}
-
-		SECTION("Non-const: Return correct iterator") {
-			auto it = g.find("Yoona", "Taeyeon", 818);
-
-			CHECK((*it).from == "Yoona");
-			CHECK((*it).to == "Taeyeon");
-			CHECK((*it).weight == 818);
-
-			it = g.find("Yoona", "Yoona", 530);
-
-			CHECK((*it).from == "Yoona");
-			CHECK((*it).to == "Yoona");
-			CHECK((*it).weight == 530);
-		}
-
-		SECTION("Const: Return correct iterator") {
-			auto it = g_copy_const.find("Yoona", "Taeyeon", 818);
-
-			CHECK((*it).from == "Yoona");
-			CHECK((*it).to == "Taeyeon");
-			CHECK((*it).weight == 818);
-
-			it = g_copy_const.find("Yoona", "Yoona", 530);
-
-			CHECK((*it).from == "Yoona");
-			CHECK((*it).to == "Yoona");
-			CHECK((*it).weight == 530);
-		}
-	}
-
-	SECTION("connections()") {
-		SECTION("Empty connections") {
-			CHECK(g.connections("Taeyeon").empty());
-			CHECK(g_copy_const.connections("Taeyeon").empty());
-		}
-
-		SECTION("Non-const: Check if nodes return are in order and complete") {
-			g.insert_edge("Yoona", "Tzuyu", 818);
-			g.insert_edge("Yoona", "Yoona", 425);
-			g.insert_edge("Yoona", "Taeyeon", 309);
-
-			CHECK(g.connections("Yoona")
-			      == std::vector<std::string>{"Taeyeon", "Taeyeon", "Tzuyu", "Yoona", "Yoona"});
-		}
-
-		SECTION("Const: Check if nodes return are in order and complete") {
-			g.insert_edge("Yoona", "Tzuyu", 818);
-			g.insert_edge("Yoona", "Yoona", 425);
-			g.insert_edge("Yoona", "Taeyeon", 309);
-
-			auto const g_const = g;
-
-			CHECK(g_const.connections("Yoona")
-			      == std::vector<std::string>{"Taeyeon", "Taeyeon", "Tzuyu", "Yoona", "Yoona"});
-		}
-
-		SECTION("Non-const Exception: if is_node(src) is false") {
-			// src not exist
-			CHECK_THROWS_MATCHES(g.connections("Yeonwoo"),
-			                     std::runtime_error,
-			                     Catch::Matchers::Message("Cannot call gdwg::graph<N, E>::connections "
-			                                              "if src doesn't exist in the graph"));
-		}
-
-		SECTION("Const Exception: if is_node(src) is false") {
-			// src not exist
-			CHECK_THROWS_MATCHES(g_copy_const.connections("Yeonwoo"),
-			                     std::runtime_error,
-			                     Catch::Matchers::Message("Cannot call gdwg::graph<N, E>::connections "
-			                                              "if src doesn't exist in the graph"));
-		}
-	}
+	CHECK_THROWS(g1.connections(99));
 }
