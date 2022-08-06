@@ -163,10 +163,9 @@ namespace gdwg {
 //			                         "new data if they don't exist in the graph");
 //		}
 		auto merge_replace_node(N const& old_data, N const& new_data) -> void {
-			auto old_iter = nodes_.find(old_data);
-			auto new_iter = nodes_.find(new_data);
-			// throw error
-			if (old_iter != nodes_.end() and  new_iter != nodes_.end()) {
+			auto old_it = nodes_.find(old_data);
+			auto new_it = nodes_.find(new_data);
+			if (old_it == nodes_.end() or new_it == nodes_.end()) {
 				throw std::runtime_error("Cannot call gdwg::graph<N, E>::merge_replace_node on old or "
 				                         "new data if they don't exist in the graph");
 			}
@@ -182,17 +181,9 @@ namespace gdwg {
 
 			// Merge the nodes
 			for (auto const& e_ptr : edge_ptrs) {
-//				auto new_src_ptr = e_ptr->src;
-//				auto new_dst_ptr = e_ptr->dst;
-//				if (*(e_ptr->src) == old_data) {
-//					 new_src_ptr = (*new_iter).get();
-//				}
-//				// same for dst
-//				if (*(e_ptr->dst) == old_data) {
-//					new_dst_ptr = (*new_iter).get();
-//				}
-				auto new_src_ptr = *(e_ptr->src) == old_data ? (*new_iter).get() : e_ptr->src;
-				auto new_dst_ptr = *(e_ptr->dst) == old_data ? (*new_iter).get() : e_ptr->dst;
+				auto new_src_ptr = *(e_ptr->src) == old_data ? (*new_it).get() : e_ptr->src;
+				auto new_dst_ptr = *(e_ptr->dst) == old_data ? (*new_it).get() : e_ptr->dst;
+
 				struct edge new_edge = edge{new_src_ptr, new_dst_ptr, e_ptr->weight};
 				edges_.erase(e_ptr);
 
@@ -201,8 +192,9 @@ namespace gdwg {
 					edges_.emplace(std::make_shared<edge>(new_edge));
 				}
 			}
+
 			// Remove the old node
-			nodes_.erase(old_iter);
+			nodes_.erase(old_it);
 		}
 
 		auto erase_node(N const& value) -> bool {
