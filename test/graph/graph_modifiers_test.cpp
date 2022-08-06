@@ -182,17 +182,20 @@ TEST_CASE("Replace Node") {
 		CHECK(g.find(99, 99, 200) != g.end());
 	}
 
-	// replace success
-	CHECK(g.replace_node(1, 99));
+	SECTION("replace succedd"){
+		CHECK(g.replace_node(1, 99));
 
-	CHECK(g.is_node(99));
-	CHECK_FALSE(g.is_node(1));
+		CHECK(g.is_node(99));
+		CHECK(!g.is_node(1));
+	}
 
 	// replace node already exist
-	CHECK_FALSE(g.replace_node(99, 2));
+	SECTION("replace exist node"){
+		CHECK_FALSE(g.replace_node(1, 2));
 
-	CHECK(g.is_node(99));
-	CHECK(g.is_node(2));
+		CHECK(g.is_node(1));
+		CHECK(g.is_node(2));
+	}
 
 	// no src, with dst
 	CHECK_THROWS(g.replace_node(66, 2));
