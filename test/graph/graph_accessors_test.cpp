@@ -32,16 +32,16 @@ TEST_CASE("Is connected") {
 	CHECK_THROWS(g1.is_connected(1, 99));
 }
 
-TEST_CASE("nodes function test") {
-	SECTION("nodes function test use list constructor and compare to vector") {
-		auto v = std::vector<int>{0, 46, 47, 48};
-		auto g = gdwg::graph<int, std::string>{46, 47, 48, 0};
+TEST_CASE("Nodes") {
+	SECTION("list init ") {
+		auto v = std::vector<int>{0, 1, 2, 3};
+		auto g = gdwg::graph<int, std::string>{1, 2, 3, 0};
 		CHECK(v == g.nodes());
 		CHECK(g.nodes() == g.nodes());
 	}
 
-	SECTION("nodes function test use vector constructor and compare to that vector") {
-		auto v1 = std::vector<int>{0, 46, 47, 48, 78798};
+	SECTION("vector init") {
+		auto v1 = std::vector<int>{0, 1, 2, 3, 777};
 		auto g1 = gdwg::graph<int, std::string>(v1.begin(), v1.end());
 		CHECK(g1.nodes() == v1);
 	}
