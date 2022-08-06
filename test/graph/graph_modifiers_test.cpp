@@ -51,12 +51,12 @@ TEST_CASE("Clear"){
 }
 //
 //	// Non-relevant is not removed
-//	CHECK(g.find("Taeyeon", "Tzuyu", 309) != g.end());
+//	CHECK(g.find(2, 3, 309) != g.end());
 //
 //	// Relevant ones are removed
-//	CHECK(g.find("Yoona", "Yoona", 530) == g.end());
-//	CHECK(g.find("Yoona", "Yoona", 520) == g.end());
-//	CHECK(g.find("Yoona", "Tzuyu", 309) == g.end());}
+//	CHECK(g.find(1, 1, 530) == g.end());
+//	CHECK(g.find(1, 1, 520) == g.end());
+//	CHECK(g.find(1, 3, 309) == g.end());}
 
 //TEST_CASE("Erase node"){
 //	auto g = gdwg::graph<int, int>{1, 2, 3, 4};
@@ -113,6 +113,52 @@ TEST_CASE("Erase edge (src, dst, weight)") {
 	CHECK_THROWS(g.erase_edge(7, 8, 50));
 }
 
+
+TEST_CASE("Erase edge: (iterator i)") {
+	auto g = gdwg::graph<int, int>{1, 2, 3};
+	
+	SECTION("Remove not exist edge") {
+		CHECK(g.erase_edge(g.begin()) == g.end());
+		CHECK(g.erase_edge(g.end()) == g.end());
+		CHECK(g.erase_edge(gdwg::graph<int, int>::iterator()) == g.end());
+	}
+
+	SECTION("Remove from a graph with single edge") {
+		g.insert_edge(3, 2, 2);
+
+		CHECK(g.erase_edge(g.begin()) == g.end());
+		CHECK(g.find(3, 2, 2) == g.end());
+	}
+
+	SECTION("Remove from a graph with multiple edges") {
+		g.insert_edge(3, 2, 2);
+		g.insert_edge(1, 2, 666);
+		g.insert_edge(3, 2, 4);
+
+		SECTION("Test 1") {
+			CHECK(g.erase_edge(g.find(3, 2, 2)) == g.find(3, 2, 4));
+
+			// Only the particular edge is removed
+			CHECK(g.find(3, 2, 2) == g.end());
+			CHECK(g.find(1, 2, 666) != g.end());
+			CHECK(g.find(3, 2, 4) != g.end());
+		}
+
+		SECTION("Test 2") {
+			CHECK(g.erase_edge(g.find(1, 2, 666)) == g.end());
+		}
+
+		SECTION("Test 3") {
+			CHECK(g.erase_edge(g.find(3, 2, 4)) == g.find(1, 2, 666));
+		}
+
+		SECTION("Test 4") {
+			CHECK(g.erase_edge(g.find(3, 2, 4)) == g.find(1, 2, 666));
+			CHECK(g.erase_edge(g.find(3, 2, 2)) == g.find(1, 2, 666));
+			CHECK(g.erase_edge(g.find(1, 2, 666)) == g.end());
+		}
+	}
+}
 //TEST_CASE("Erase edge (iterator i)") {
 //	auto g = gdwg::graph<int, int>{1, 2, 3};
 //	g.insert_edge(1, 2, 50);
