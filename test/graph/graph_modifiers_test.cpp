@@ -117,48 +117,86 @@ TEST_CASE("Erase edge (src, dst, weight)") {
 TEST_CASE("Erase edge: (iterator i)") {
 	auto g = gdwg::graph<int, int>{1, 2, 3};
 	
-	SECTION("Remove not exist edge") {
-		CHECK(g.erase_edge(g.begin()) == g.end());
-		CHECK(g.erase_edge(g.end()) == g.end());
-		CHECK(g.erase_edge(gdwg::graph<int, int>::iterator()) == g.end());
-	}
+	// remove non-existing edge
+	CHECK(g.erase_edge(g.begin()) == g.end());
+	CHECK(g.erase_edge(g.end()) == g.end());
+	CHECK(g.erase_edge(gdwg::graph<int, int>::iterator()) == g.end());
+	
+	
+	g.insert_edge(3, 2, 2);
+	g.insert_edge(1, 2, 7);
+	g.insert_edge(3, 2, 4);
+	
 
-	SECTION("Remove from a graph with single edge") {
-		g.insert_edge(3, 2, 2);
+	CHECK(g.erase_edge(g.find(3, 2, 2)) == g.find(3, 2, 4));
 
-		CHECK(g.erase_edge(g.begin()) == g.end());
-		CHECK(g.find(3, 2, 2) == g.end());
-	}
-
-	SECTION("Remove from a graph with multiple edges") {
-		g.insert_edge(3, 2, 2);
-		g.insert_edge(1, 2, 666);
-		g.insert_edge(3, 2, 4);
-
-		SECTION("Test 1") {
-			CHECK(g.erase_edge(g.find(3, 2, 2)) == g.find(3, 2, 4));
-
-			// Only the particular edge is removed
-			CHECK(g.find(3, 2, 2) == g.end());
-			CHECK(g.find(1, 2, 666) != g.end());
-			CHECK(g.find(3, 2, 4) != g.end());
-		}
-
-		SECTION("Test 2") {
-			CHECK(g.erase_edge(g.find(1, 2, 666)) == g.end());
-		}
-
-		SECTION("Test 3") {
-			CHECK(g.erase_edge(g.find(3, 2, 4)) == g.find(1, 2, 666));
-		}
-
-		SECTION("Test 4") {
-			CHECK(g.erase_edge(g.find(3, 2, 4)) == g.find(1, 2, 666));
-			CHECK(g.erase_edge(g.find(3, 2, 2)) == g.find(1, 2, 666));
-			CHECK(g.erase_edge(g.find(1, 2, 666)) == g.end());
-		}
-	}
+	// Only target edge is removed
+	CHECK(g.find(3, 2, 2) == g.end());
+	CHECK(g.find(1, 2, 7) != g.end());
+	CHECK(g.find(3, 2, 4) != g.end());
+	
 }
+TEST_CASE("Erase edge: (iterator i, iterator s)") {
+	auto g = gdwg::graph<int, int>{1, 2, 3};
+	
+	g.insert_edge(3, 2, 2);
+	g.insert_edge(1, 2, 17);
+	g.insert_edge(3, 2, 4);
+
+	CHECK(g.erase_edge(g.find(3, 2, 2), g.find(3, 2, 4))
+	      == g.find(3, 2, 4));
+
+	// Only target edge is removed
+	CHECK(g.find(3, 2, 2) == g.end());
+	CHECK(g.find(1, 2, 17) != g.end());
+	CHECK(g.find(3, 2, 4) != g.end());
+}
+
+
+TEST_CASE("Replace Node") {
+	auto g = gdwg::graph<int, int>{1, 2, 3};
+
+	// replaced node
+	CHECK(g.replace_node(1, 20));
+	CHECK(g.is_node(20));
+	CHECK_FALSE(g.is_node(1));
+
+	SECTION("check edge ") {
+		CHECK(g.insert_edge(1, 2, 818));
+		CHECK(g.insert_edge(2, 1, 1314));
+		CHECK(g.insert_edge(1, 1, 530));
+		CHECK(g.insert_edge(1, 1, 1314));
+
+		CHECK(g.replace_node(1, 20));
+
+		// Check that the edges no longer exist
+		CHECK(g.find(1, 2, 818) == g.end());
+		CHECK(g.find(2, 1, 1314) == g.end());
+		CHECK(g.find(1, 1, 530) == g.end());
+		CHECK(g.find(1, 1, 1314) == g.end());
+
+		// Check that the old node doesn't exist, and new node exist
+		CHECK(g.is_node(20));
+		CHECK_FALSE(g.is_node(1));
+
+		// Check we have these edges
+		CHECK(g.find(20, 2, 818) != g.end());
+		CHECK(g.find(2, 20, 1314) != g.end());
+		CHECK(g.find(20, 20, 530) != g.end());
+		CHECK(g.find(20, 20, 1314) != g.end());
+	}
+
+	// node already exists
+	CHECK_FALSE(g.replace_node(1, 2));
+
+	CHECK(g.is_node(1));
+	CHECK(g.is_node(2));
+	// replace with false src, dst
+	CHECK_THROWS(g.replace_node(3, 20));
+	CHECK_THROWS(g.replace_node(20, 3));
+
+}
+
 //TEST_CASE("Erase edge (iterator i)") {
 //	auto g = gdwg::graph<int, int>{1, 2, 3};
 //	g.insert_edge(1, 2, 50);
