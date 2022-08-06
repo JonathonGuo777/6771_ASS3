@@ -156,16 +156,11 @@ TEST_CASE("Erase edge: (iterator i, iterator s)") {
 TEST_CASE("Replace Node") {
 	auto g = gdwg::graph<int, int>{1, 2, 3};
 
-	// replaced node
-	CHECK(g.replace_node(1, 20));
-	CHECK(g.is_node(20));
-	CHECK_FALSE(g.is_node(1));
-
 	SECTION("check edge ") {
 		CHECK(g.insert_edge(1, 2, 818));
 		CHECK(g.insert_edge(2, 1, 1314));
 		CHECK(g.insert_edge(1, 1, 530));
-		CHECK(g.insert_edge(1, 1, 1314));
+
 
 		CHECK(g.replace_node(1, 20));
 
@@ -173,7 +168,7 @@ TEST_CASE("Replace Node") {
 		CHECK(g.find(1, 2, 818) == g.end());
 		CHECK(g.find(2, 1, 1314) == g.end());
 		CHECK(g.find(1, 1, 530) == g.end());
-		CHECK(g.find(1, 1, 1314) == g.end());
+
 
 		// Check that the old node doesn't exist, and new node exist
 		CHECK(g.is_node(20));
@@ -183,11 +178,16 @@ TEST_CASE("Replace Node") {
 		CHECK(g.find(20, 2, 818) != g.end());
 		CHECK(g.find(2, 20, 1314) != g.end());
 		CHECK(g.find(20, 20, 530) != g.end());
-		CHECK(g.find(20, 20, 1314) != g.end());
+
 	}
 
+	// replaced node
+	CHECK(g.replace_node(1, 20));
+	CHECK(g.is_node(20));
+	CHECK_FALSE(g.is_node(1));
+
 	// node already exists
-	CHECK_FALSE(g.replace_node(1, 2));
+	CHECK_FALSE(g.replace_node(2, 3));
 
 	CHECK(g.is_node(1));
 	CHECK(g.is_node(2));
