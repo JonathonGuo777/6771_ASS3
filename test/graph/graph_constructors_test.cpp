@@ -1,254 +1,234 @@
 #include "gdwg/graph.hpp"
 
 #include <catch2/catch.hpp>
-//#include <iterator>
-//#include <set>
-//#include <string>
 
-TEST_CASE("Constructor: Default") {
+
+
+
+TEST_CASE("Default") {
 	auto g = gdwg::graph<int, std::string>{};
-
 	CHECK(g.empty());
 }
 
-TEST_CASE("Constructor: Initializer list") {
+TEST_CASE("Initializer list") {
 	SECTION("int") {
-		auto g = gdwg::graph<int, std::string>{1, 5, 0, -9, -4};
-
-		CHECK(g.is_node(1));
-		CHECK(g.is_node(5));
-		CHECK(g.is_node(0));
-		CHECK(g.is_node(-9));
-		CHECK(g.is_node(-4));
+		auto g = gdwg::graph<int, std::string>{-3, 19, 20};
+		CHECK(!g.empty());
+		CHECK(g.is_node(-3));
+		CHECK(g.is_node(19));
+		CHECK(g.is_node(20));
+		// error
+		CHECK(!g.is_node(0));
+		CHECK(!g.is_node(5));
 	}
-
 	SECTION("string") {
-		auto g = gdwg::graph<std::string, std::string>{"one", "two", "three"};
-
-		CHECK(g.is_node("one"));
-		CHECK(g.is_node("two"));
-		CHECK(g.is_node("three"));
+		auto g = gdwg::graph<std::string, std::string>{"a", "b", "text"};
+		CHECK(!g.empty());
+		CHECK(g.is_node("a"));
+		CHECK(g.is_node("b"));
+		CHECK(g.is_node("text"));
+		// error
+		CHECK(!g.is_node(""));
+		CHECK(!g.is_node("c"));
 	}
-
 	SECTION("std::vector") {
-		auto v1 = std::vector<int>{1, 3, 5, 7};
-		auto v2 = std::vector<int>{-2, -4, -6, -8};
-		auto v3 = std::vector<int>{1, 3, 5, 7};
+		auto v1 = std::vector<int>{1, 2, 3};
+		auto v2 = std::vector<int>{-1, -2, 0};
+		auto v3 = std::vector<int>{4, 5, 6};
+		auto v4 = std::vector<int>{7, 8, 9};
 		auto g = gdwg::graph<std::vector<int>, std::string>{v1, v2, v3};
-
+		CHECK(!g.empty());
 		CHECK(g.is_node(std::vector<int>(v1)));
 		CHECK(g.is_node(std::vector<int>(v2)));
 		CHECK(g.is_node(std::vector<int>(v3)));
+		// error
+		CHECK(!g.is_node(std::vector<int>(v4)));
 	}
 }
 
-TEST_CASE("Constructor: InputIt") {
+
+TEST_CASE("InputIt") {
 	SECTION("int vector") {
-		auto v = std::vector<int>{-2, -4, -6, -8};
+		auto v = std::vector<int>{11, 99};
 		auto g = gdwg::graph<int, std::string>(v.begin(), v.end());
 
-		CHECK(g.is_node(-2));
-		CHECK(g.is_node(-4));
-		CHECK(g.is_node(-6));
-		CHECK(g.is_node(-8));
+		CHECK(!g.empty());
+		CHECK(g.is_node(11));
+		CHECK(g.is_node(99));
+		//error
+		CHECK(!g.is_node(22));
+		CHECK(!g.is_node(-2));
 	}
 
 	SECTION("string set") {
-		auto s = std::set<std::string>{"Taeyeon", "Yoona", "Mina"};
+		auto s = std::set<std::string>{"a", "b", "text"};
 		auto g = gdwg::graph<std::string, int>(s.begin(), s.end());
-
-		CHECK(g.is_node("Taeyeon"));
-		CHECK(g.is_node("Yoona"));
-		CHECK(g.is_node("Mina"));
+		CHECK(!g.empty());
+		CHECK(g.is_node("a"));
+		CHECK(g.is_node("b"));
+		CHECK(g.is_node("text"));
+		// error
+		CHECK(!g.is_node(""));
+		CHECK(!g.is_node("c"));
 	}
 }
 
+
 TEST_CASE("Copy Constructor") {
-	SECTION("Just nodes") {
-		auto const g = gdwg::graph<std::string, int>{"Taeyeon", "Yoona", "Mina"};
+
+	SECTION("nodes") {
+		auto const g = gdwg::graph<std::string, int>{"a", "b", "text"};
 		auto g_copy = g;
+		// check same nodes
+		CHECK(!g.empty());
+		CHECK(g.is_node("a"));
+		CHECK(g.is_node("b"));
+		CHECK(g.is_node("text"));
+		// error
+		CHECK(!g.is_node(""));
+		CHECK(!g.is_node("c"));
 
-		// Check that both graph has the exactly same nodes
-		CHECK(g.is_node("Taeyeon"));
-		CHECK(g.is_node("Yoona"));
-		CHECK(g.is_node("Mina"));
+		CHECK(!g_copy.empty());
+		CHECK(g_copy.is_node("a"));
+		CHECK(g_copy.is_node("b"));
+		CHECK(g_copy.is_node("text"));
+		// error
+		CHECK(!g_copy.is_node(""));
+		CHECK(!g_copy.is_node("c"));
 
-		CHECK(g_copy.is_node("Taeyeon"));
-		CHECK(g_copy.is_node("Yoona"));
-		CHECK(g_copy.is_node("Mina"));
-
-		// Check that modifying one will not affect the other
-		// Assumes the correctness of replace_node
-		CHECK(g_copy.replace_node("Mina", "Nayeon"));
-
-		CHECK(g.is_node("Mina"));
-		CHECK(g_copy.is_node("Nayeon"));
-
-		CHECK_FALSE(g.is_node("Nayeon"));
-		CHECK_FALSE(g_copy.is_node("Mina"));
 	}
-
-	// Assumes insert_edge(), begin() works
 	SECTION("Edges") {
-		auto g = gdwg::graph<std::string, int>{"Taeyeon", "Yoona", "Mina"};
-		g.insert_edge("Taeyeon", "Yoona", 1314);
-		g.insert_edge("Taeyeon", "Yoona", 520);
+		auto g = gdwg::graph<std::string, int>{"a", "b", "text"};
+		g.insert_edge("a", "b", 4);
+		g.insert_edge("b", "text", 8);
 
 		auto g_copy = g;
 
 		// Check edges by iterator
 		auto g_copy_it = g_copy.begin();
-		CHECK((*g_copy_it).from == "Taeyeon");
-		CHECK((*g_copy_it).to == "Yoona");
-		CHECK((*g_copy_it).weight == 520);
+		CHECK((*g_copy_it).from == "a");
+		CHECK((*g_copy_it).to == "b");
+		CHECK((*g_copy_it).weight == 4);
 
 		++g_copy_it;
-		CHECK((*g_copy_it).from == "Taeyeon");
-		CHECK((*g_copy_it).to == "Yoona");
-		CHECK((*g_copy_it).weight == 1314);
+		CHECK((*g_copy_it).from == "b");
+		CHECK((*g_copy_it).to == "text");
+		CHECK((*g_copy_it).weight == 8);
 	}
 }
 
 TEST_CASE("Copy Assignment") {
-	SECTION("Just nodes") {
-		auto const g = gdwg::graph<std::string, int>{"Taeyeon", "Yoona", "Mina"};
-		auto g_copy = gdwg::graph<std::string, int>{"How", "Are", "You"};
+	SECTION("nodes") {
+		auto const g = gdwg::graph<std::string, int>{"a", "b", "text"};
+		auto g_copy = gdwg::graph<std::string, int>{"c", "d"};
 
-		CHECK(g.is_node("Taeyeon"));
-		CHECK(g.is_node("Yoona"));
-		CHECK(g.is_node("Mina"));
+		CHECK(g.is_node("a"));
+		CHECK(g.is_node("b"));
+		CHECK(g.is_node("text"));
 
-		CHECK(g_copy.is_node("How"));
-		CHECK(g_copy.is_node("Are"));
-		CHECK(g_copy.is_node("You"));
+		CHECK(g_copy.is_node("c"));
+		CHECK(g_copy.is_node("d"));
 
-		// Perform the copy assignment
 		g_copy = g;
 
-		CHECK(g.is_node("Taeyeon"));
-		CHECK(g.is_node("Yoona"));
-		CHECK(g.is_node("Mina"));
+		CHECK(g.is_node("a"));
+		CHECK(g.is_node("b"));
+		CHECK(g.is_node("text"));
 
-		CHECK(g_copy.is_node("Taeyeon"));
-		CHECK(g_copy.is_node("Yoona"));
-		CHECK(g_copy.is_node("Mina"));
-
-		// Modify one and check if the other is changes
-		// Assumes the correctness of replace_node
-		CHECK(g_copy.replace_node("Mina", "Nayeon"));
-
-		CHECK(g.is_node("Mina"));
-		CHECK(g_copy.is_node("Nayeon"));
-
-		CHECK_FALSE(g.is_node("Nayeon"));
-		CHECK_FALSE(g_copy.is_node("Mina"));
+		CHECK(g_copy.is_node("a"));
+		CHECK(g_copy.is_node("b"));
+		CHECK(g_copy.is_node("text"));
+		//before
+		CHECK(!g_copy.is_node("c"));
+		CHECK(!g_copy.is_node("d"));
 	}
-
-	// Assumes insert_edge(), begin() works
 	SECTION("Edges") {
-		auto g = gdwg::graph<std::string, int>{"Taeyeon", "Yoona", "Mina"};
-		g.insert_edge("Taeyeon", "Yoona", 1314);
-		g.insert_edge("Taeyeon", "Yoona", 520);
+		auto g = gdwg::graph<std::string, int>{"a", "b", "text"};
+		g.insert_edge("a", "b", 4);
+		g.insert_edge("b", "text", 8);
 
 		auto g_copy = gdwg::graph<std::string, int>();
 		g_copy = g;
 
 		// Check edges by iterator
 		auto g_copy_it = g_copy.begin();
-		CHECK((*g_copy_it).from == "Taeyeon");
-		CHECK((*g_copy_it).to == "Yoona");
-		CHECK((*g_copy_it).weight == 520);
+		CHECK((*g_copy_it).from == "a");
+		CHECK((*g_copy_it).to == "b");
+		CHECK((*g_copy_it).weight == 4);
 
 		++g_copy_it;
-		CHECK((*g_copy_it).from == "Taeyeon");
-		CHECK((*g_copy_it).to == "Yoona");
-		CHECK((*g_copy_it).weight == 1314);
+		CHECK((*g_copy_it).from == "b");
+		CHECK((*g_copy_it).to == "text");
+		CHECK((*g_copy_it).weight == 8);
 	}
 }
 
-// Move constructor: Iterator of other are not invalidated
 TEST_CASE("Move Constructor") {
-	SECTION("Just nodes") {
-		auto moved_from = gdwg::graph<std::string, int>{"Taeyeon", "Yoona", "Mina"};
 
-		SECTION("Check moved to contents && if the moved from is emtpy") {
-			auto moved_to = gdwg::graph<std::string, int>(std::move(moved_from));
+	SECTION("Check moved dst contents and the moved src is emtpy") {
+		auto moved_src = gdwg::graph<std::string, int>{"a", "b", "text"};
+		auto moved_dst = gdwg::graph<std::string, int>(std::move(moved_src));
 
-			// Check that both graph has the exactly same nodes
-			CHECK(moved_to.is_node("Taeyeon"));
-			CHECK(moved_to.is_node("Yoona"));
-			CHECK(moved_to.is_node("Mina"));
+		CHECK(moved_dst.is_node("a"));
+		CHECK(moved_dst.is_node("b"));
+		CHECK(moved_dst.is_node("text"));
 
-			CHECK(moved_from.empty());
-		}
+		CHECK(moved_src.empty());
+	}
 
-		// Assumes insert_edge(), begin() works
-		SECTION("Check that moved_from iterator works and edge is correctly moved") {
-			moved_from.insert_edge("Taeyeon", "Yoona", 1314);
-			auto moved_from_it = moved_from.begin();
+	SECTION("Check iterator") {
+		auto moved_src = gdwg::graph<std::string, int>{"a", "b", "text"};
+		auto moved_dst = gdwg::graph<std::string, int>{"b", "c"};
+		moved_src.insert_edge("a", "b", 4);
+		moved_dst.insert_edge("b", "c", 5);
 
-			auto moved_to = gdwg::graph<std::string, int>(std::move(moved_from));
-			CHECK((*moved_from_it).from == "Taeyeon");
-			CHECK((*moved_from_it).to == "Yoona");
-			CHECK((*moved_from_it).weight == 1314);
-		}
+		auto moved_src_it = moved_src.begin();
+		auto moved_dst_it = moved_dst.begin();
+
+		// before move, check iterator
+		CHECK((*moved_dst_it).from == "b");
+		CHECK((*moved_dst_it).to == "c");
+		CHECK((*moved_dst_it).weight == 5);
+
+		CHECK((*moved_src_it).from == "a");
+		CHECK((*moved_src_it).to == "b");
+		CHECK((*moved_src_it).weight == 4);
+
+		// move
+		moved_dst = gdwg::graph<std::string, int>(std::move(moved_src));
+
+		// after move
+		// still valid
+		CHECK((*moved_src_it).from == "a");
+		CHECK((*moved_src_it).to == "b");
+		CHECK((*moved_src_it).weight == 4);
+
 	}
 }
 
 TEST_CASE("Move Assignment") {
-	SECTION("Just nodes") {
-		auto moved_from = gdwg::graph<std::string, int>{"Taeyeon", "Yoona", "Mina"};
-		auto moved_to = gdwg::graph<std::string, int>();
+	auto moved_src = gdwg::graph<std::string, int>{"a", "b", "text"};
+	auto moved_dst = gdwg::graph<std::string, int>();
 
-		SECTION("Check moved to contents && if the moved from is emtpy") {
-			moved_to = std::move(moved_from);
+	SECTION("Check moved dst contents and the moved src is emtpy") {
+		moved_dst = std::move(moved_src);
 
-			// Check that both graph has the exactly same nodes
-			CHECK(moved_to.is_node("Taeyeon"));
-			CHECK(moved_to.is_node("Yoona"));
-			CHECK(moved_to.is_node("Mina"));
+		CHECK(moved_dst.is_node("a"));
+		CHECK(moved_dst.is_node("b"));
+		CHECK(moved_dst.is_node("text"));
 
-			CHECK(moved_from.empty());
-		}
-
-		// Assumes insert_edge(), begin() works
-		SECTION("Check that moved_from iterator works and edge is correctly moved") {
-			moved_from.insert_edge("Taeyeon", "Yoona", 1314);
-			auto moved_from_it = moved_from.begin();
-
-			moved_to = std::move(moved_from);
-			CHECK((*moved_from_it).from == "Taeyeon");
-			CHECK((*moved_from_it).to == "Yoona");
-			CHECK((*moved_from_it).weight == 1314);
-		}
-	}
-}
-
-TEST_CASE("Check if resources are owned") {
-	SECTION("Test 1: Node") {
-		auto g = gdwg::graph<std::string, int>();
-		{
-			auto s = std::string("Test");
-			g.insert_node(s);
-		}
-
-		CHECK(g.is_node("Test"));
+		CHECK(moved_src.empty());
 	}
 
-	SECTION("Test 2: Node and Edge") {
-		auto g = gdwg::graph<std::vector<int>, std::string>();
-		{
-			auto s = std::string("Test");
-			auto v1 = std::vector<int>{1, 3, 5};
-			auto v2 = std::vector<int>{2, 4, 6};
 
-			g.insert_node(v1);
-			g.insert_node(v2);
-			g.insert_edge(v1, v2, s);
-		}
+	SECTION("Check iterator") {
+		moved_src.insert_edge("a", "b", 5);
+		auto moved_from_it = moved_src.begin();
 
-		CHECK(g.is_node(std::vector<int>{1, 3, 5}));
-		CHECK(g.is_node(std::vector<int>{2, 4, 6}));
-		CHECK((*(g.begin())).weight == "Test");
+		moved_dst = std::move(moved_src);
+		CHECK((*moved_from_it).from == "a");
+		CHECK((*moved_from_it).to == "b");
+		CHECK((*moved_from_it).weight == 5);
 	}
+
 }

@@ -10,33 +10,35 @@
 #include <string_view>
 #include <vector>
 
-TEST_CASE("Iterator") {
-	SECTION("Empty Graph") {
-		auto const g_empty = gdwg::graph<std::string, int>{};
-		CHECK(g_empty.begin() == g_empty.end());
-	}
 
-	auto g = gdwg::graph<std::string, int>{"Yoona", "Taeyeon", "Tzuyu"};
-	g.insert_edge("Yoona", "Taeyeon", 818);
-	g.insert_edge("Yoona", "Yoona", 530);
-	g.insert_edge("Tzuyu", "Taeyeon", 1314);
+TEST_CASE("Empty Graph"){
+	auto const g_empty = gdwg::graph<std::string, int>{};
+	CHECK(g_empty.begin() == g_empty.end());
+}
+
+TEST_CASE("Iterator") {
+
+	auto g = gdwg::graph<std::string, int>{"a", "b", "c"};
+	g.insert_edge("a", "b", 818);
+	g.insert_edge("a", "a", 530);
+	g.insert_edge("c", "b", 1314);
 
 	auto const g_const = g;
 
 	SECTION("Begin and dereference *") {
 		auto const it = g_const.begin();
 
-		CHECK((*it).from == "Tzuyu");
-		CHECK((*it).to == "Taeyeon");
+		CHECK((*it).from == "c");
+		CHECK((*it).to == "b");
 		CHECK((*it).weight == 1314);
 	}
 
 	SECTION("Traveral ++()") {
 		// Expected output
 		auto const exp = std::vector<gdwg::graph<std::string, int>::value_type>{
-		   {"Tzuyu", "Taeyeon", 1314},
-		   {"Yoona", "Taeyeon", 818},
-		   {"Yoona", "Yoona", 530},
+		   {"c", "b", 1314},
+		   {"a", "b", 818},
+		   {"a", "a", 530},
 		};
 
 		// Iterate through the graph
@@ -53,22 +55,22 @@ TEST_CASE("Iterator") {
 
 		// Post increment and check if the iterator returned is correct
 		auto prev_it = it++;
-		CHECK((*prev_it).from == "Tzuyu");
-		CHECK((*prev_it).to == "Taeyeon");
+		CHECK((*prev_it).from == "c");
+		CHECK((*prev_it).to == "b");
 		CHECK((*prev_it).weight == 1314);
 
 		// Check if increment is success
-		CHECK((*it).from == "Yoona");
-		CHECK((*it).to == "Taeyeon");
+		CHECK((*it).from == "a");
+		CHECK((*it).to == "b");
 		CHECK((*it).weight == 818);
 	}
 
 	SECTION("Traveral --()") {
 		// Expected output
 		auto const exp = std::vector<gdwg::graph<std::string, int>::value_type>{
-		   {"Tzuyu", "Taeyeon", 1314},
-		   {"Yoona", "Taeyeon", 818},
-		   {"Yoona", "Yoona", 530},
+		   {"c", "b", 1314},
+		   {"a", "b", 818},
+		   {"a", "a", 530},
 		};
 
 		// Increment to point the last element
@@ -98,13 +100,13 @@ TEST_CASE("Iterator") {
 
 		// Post decrement and check if the iterator returned is correct
 		auto last_element_it = it--;
-		CHECK((*last_element_it).from == "Yoona");
-		CHECK((*last_element_it).to == "Yoona");
+		CHECK((*last_element_it).from == "a");
+		CHECK((*last_element_it).to == "a");
 		CHECK((*last_element_it).weight == 530);
 
 		// Check if decrement is success
-		CHECK((*it).from == "Yoona");
-		CHECK((*it).to == "Taeyeon");
+		CHECK((*it).from == "a");
+		CHECK((*it).to == "b");
 		CHECK((*it).weight == 818);
 	}
 
@@ -115,13 +117,13 @@ TEST_CASE("Iterator") {
 
 		SECTION("Test if true on equal iterator") {
 			auto it = g_const.begin();
-			CHECK(g_const.begin() == g_const.find("Tzuyu", "Taeyeon", 1314));
+			CHECK(g_const.begin() == g_const.find("c", "b", 1314));
 
 			++it;
-			CHECK(it == g_const.find("Yoona", "Taeyeon", 818));
+			CHECK(it == g_const.find("a", "b", 818));
 
 			++it;
-			CHECK(it == g_const.find("Yoona", "Yoona", 530));
+			CHECK(it == g_const.find("a", "a", 530));
 
 			++it;
 			CHECK(it == g_const.end());
