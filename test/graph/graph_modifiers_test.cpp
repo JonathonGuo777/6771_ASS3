@@ -113,24 +113,24 @@ TEST_CASE("Erase edge (src, dst, weight)") {
 	CHECK_THROWS(g.erase_edge(7, 8, 50));
 }
 
-TEST_CASE("Erase edge (iterator i)") {
-	auto g = gdwg::graph<int, int>{1, 2, 3};
-	g.insert_edge(1, 2, 50);
-	g.insert_edge(2, 3, 100);
-
-	// erase non-existing edge
-	CHECK(g.erase_edge(g.begin()) == g.end());
-	CHECK(g.erase_edge(g.end()) == g.end());
-
-	// erase existing edge
-	CHECK(g.erase_edge(g.find(1, 2, 50)) == g.find(1, 2, 50));
-
-	// remove target edges
-	CHECK(g.find(1, 2, 50) == g.end());
-	// keep non-relevant edges
-	CHECK(g.find(2, 3, 100) != g.end());
-
-}
+//TEST_CASE("Erase edge (iterator i)") {
+//	auto g = gdwg::graph<int, int>{1, 2, 3};
+//	g.insert_edge(1, 2, 50);
+//	g.insert_edge(2, 3, 100);
+//
+//	// erase non-existing edge
+//	CHECK(g.erase_edge(g.begin()) == g.end());
+//	CHECK(g.erase_edge(g.end()) == g.end());
+//
+//	// erase existing edge
+//	CHECK(g.erase_edge(g.find(1, 2, 50)) == g.find(1, 2, 50));
+//
+//	// remove target edges
+//	CHECK(g.find(1, 2, 50) == g.end());
+//	// keep non-relevant edges
+//	CHECK(g.find(2, 3, 100) != g.end());
+//
+//}
 
 
 
