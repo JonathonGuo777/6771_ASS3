@@ -156,7 +156,6 @@ TEST_CASE("Erase edge: (iterator i, iterator s)") {
 TEST_CASE("Replace Node") {
 	auto g = gdwg::graph<int, int>{1, 2, 3};
 
-
 	SECTION("edge part") {
 		CHECK(g.insert_edge(1, 2, 100));
 		CHECK(g.insert_edge(2, 1, 200));
@@ -170,7 +169,6 @@ TEST_CASE("Replace Node") {
 		CHECK(g.find(2, 1, 200) == g.end());
 		CHECK(g.find(1, 1, 50) == g.end());
 		CHECK(g.find(1, 1, 200) == g.end());
-
 
 		CHECK(g.is_node(99));
 		CHECK_FALSE(g.is_node(1));
@@ -196,7 +194,6 @@ TEST_CASE("Replace Node") {
 		CHECK(g.is_node(1));
 		CHECK(g.is_node(2));
 	}
-
 	// no src, with dst
 	CHECK_THROWS(g.replace_node(66, 2));
 	// no src no dst
@@ -205,10 +202,121 @@ TEST_CASE("Replace Node") {
 }
 
 
+TEST_CASE("merge_replace_node test") {
+	SECTION("merge_replace_node without reflexive edge") {
+		auto g1 = gdwg::graph<int, int>{23, 31, 71};
 
-TEST_CASE("Merge replace node"){
+		g1.insert_edge(31, 23, 7);
+		g1.insert_edge(23, 31, 6);
+		g1.insert_edge(23, 31, 5);
+		g1.insert_edge(31, 23, 8);
 
+		CHECK_THROWS(g1.merge_replace_node(31, 99));
+		CHECK_THROWS(g1.merge_replace_node(99, 23));
+
+		g1.merge_replace_node(23, 31);
+
+		CHECK(g1.weights(31, 31) == std::vector<int>{5, 6, 7, 8});
+
+		g1.merge_replace_node(31, 71);
+
+		CHECK(g1.weights(71, 71) == std::vector<int>{5, 6, 7, 8});
+	}
+
+	SECTION("merge_replace_node with reflexive edge") {
+		auto g2 = gdwg::graph<int, int>{23, 31, 71};
+		g2.insert_edge(23, 23, 7);
+		g2.insert_edge(31, 31, 7);
+
+		g2.merge_replace_node(23, 31);
+
+		CHECK(g2.weights(31, 31) == std::vector<int>{7});
+	}
+
+	SECTION("merge_replace_node with string and int") {
+		auto g3 = gdwg::graph<std::string, int>{"a", "b", "c", "d"};
+		g3.insert_edge("a", "b", 1);
+		g3.insert_edge("a", "c", 2);
+		g3.insert_edge("a", "d", 3);
+		g3.insert_edge("b", "b", 1);
+
+		g3.merge_replace_node("a", "b");
+
+		CHECK(g3.weights("b", "b") == std::vector<int>{1});
+		CHECK(g3.weights("b", "c") == std::vector<int>{2});
+		CHECK(g3.weights("b", "d") == std::vector<int>{3});
+	}
 }
+
+
+//TEST_CASE("Merge and replace node") {
+//	auto g = gdwg::graph<std::string, int>{"Yoona", "Taeyeon", "Tzuyu"};
+//
+//	SECTION("Simple case: No duplicate edge after replacement") {
+//		g.insert_edge("Yoona", "Taeyeon", 309);
+//		g.insert_edge("Yoona", "Yoona", 530);
+//
+//		g.merge_replace_node("Yoona", "Tzuyu");
+//
+//		// Check old edge are removed
+//		CHECK(g.find("Yoona", "Taeyeon", 309) == g.end());
+//		CHECK(g.find("Yoona", "Yoona", 530) == g.end());
+//
+//		// Check the existence of the new edges
+//		CHECK(g.find("Tzuyu", "Tzuyu", 530) != g.end());
+//		CHECK(g.find("Tzuyu", "Taeyeon", 309) != g.end());
+//
+//		// Check that the old node is remove
+//		CHECK_FALSE(g.is_node("Yoona"));
+//	}
+//
+//	SECTION("Hard case: Edges need to be merged") {
+//		g.insert_edge("Yoona", "Tzuyu", 309);
+//		g.insert_edge("Tzuyu", "Tzuyu", 309);
+//		g.insert_edge("Yoona", "Taeyeon", 520);
+//		g.insert_edge("Tzuyu", "Taeyeon", 520);
+//
+//		g.merge_replace_node("Yoona", "Tzuyu");
+//
+//		// Check that the old node is remove
+//		CHECK_FALSE(g.is_node("Yoona"));
+//
+//		// Check that edges have been merged, by checking the printed graph
+//		auto oss = std::ostringstream();
+//		oss << g;
+//		auto const expected_oss = std::string_view(R"(Taeyeon (
+//		)
+//		Tzuyu (
+//		  Taeyeon | 520
+//		  Tzuyu | 309
+//		)
+//		)");
+//		CHECK(oss.str() == expected_oss);
+//	}
+//
+//	SECTION("Exception: either is_node(old_data) or is_node(new_data) are false") {
+//		// src not exist, dst exist
+//		CHECK_THROWS_MATCHES(g.merge_replace_node("Yeonwoo", "Taeyeon"),
+//		                     std::runtime_error,
+//		                     Catch::Matchers::Message("Cannot call gdwg::graph<N, "
+//		                                              "E>::merge_replace_node on old or new data if "
+//		                                              "they don't exist in the graph"));
+//
+//		// dst not exist, src exist
+//		CHECK_THROWS_MATCHES(g.merge_replace_node("Taeyeon", "Yeonwoo"),
+//		                     std::runtime_error,
+//		                     Catch::Matchers::Message("Cannot call gdwg::graph<N, "
+//		                                              "E>::merge_replace_node on old or new data if "
+//		                                              "they don't exist in the graph"));
+//
+//		// Both not exist
+//		CHECK_THROWS_MATCHES(g.merge_replace_node("Yeonwoo", "Mina"),
+//		                     std::runtime_error,
+//		                     Catch::Matchers::Message("Cannot call gdwg::graph<N, "
+//		                                              "E>::merge_replace_node on old or new data if "
+//		                                              "they don't exist in the graph"));
+//	}
+//}
 
 
 //TEST_CASE("Erase edge (iterator i)") {
