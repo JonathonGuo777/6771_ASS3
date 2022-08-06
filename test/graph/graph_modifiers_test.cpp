@@ -54,7 +54,7 @@ TEST_CASE("Clear"){
 //	CHECK(g.find(2, 3, 309) != g.end());
 //
 //	// Relevant ones are removed
-//	CHECK(g.find(1, 1, 530) == g.end());
+//	CHECK(g.find(1, 1, 50) == g.end());
 //	CHECK(g.find(1, 1, 520) == g.end());
 //	CHECK(g.find(1, 3, 309) == g.end());}
 
@@ -156,58 +156,49 @@ TEST_CASE("Erase edge: (iterator i, iterator s)") {
 TEST_CASE("Replace Node") {
 	auto g = gdwg::graph<int, int>{1, 2, 3};
 
-	SECTION("Simple case: If node are replaced") {
-		CHECK(g.replace_node(1, 99));
 
-		CHECK(g.is_node(99));
-		CHECK_FALSE(g.is_node(1));
-	}
-
-	SECTION("Hard case: If edges are also replaced") {
-		CHECK(g.insert_edge(1, 2, 818));
-		CHECK(g.insert_edge(2, 1, 1314));
-		CHECK(g.insert_edge(1, 1, 530));
-		CHECK(g.insert_edge(1, 1, 1314));
+	SECTION("edge part") {
+		CHECK(g.insert_edge(1, 2, 100));
+		CHECK(g.insert_edge(2, 1, 200));
+		CHECK(g.insert_edge(1, 1, 50));
+		CHECK(g.insert_edge(1, 1, 200));
 
 		CHECK(g.replace_node(1, 99));
 
-		// Check that the edges no longer exist
-		CHECK(g.find(1, 2, 818) == g.end());
-		CHECK(g.find(2, 1, 1314) == g.end());
-		CHECK(g.find(1, 1, 530) == g.end());
-		CHECK(g.find(1, 1, 1314) == g.end());
+		// check delete edges
+		CHECK(g.find(1, 2, 100) == g.end());
+		CHECK(g.find(2, 1, 200) == g.end());
+		CHECK(g.find(1, 1, 50) == g.end());
+		CHECK(g.find(1, 1, 200) == g.end());
 
-		// Check that the old node doesn't exist, and new node exist
+
 		CHECK(g.is_node(99));
 		CHECK_FALSE(g.is_node(1));
 
-		// Check we have these edges
-		CHECK(g.find(99, 2, 818) != g.end());
-		CHECK(g.find(2, 99, 1314) != g.end());
-		CHECK(g.find(99, 99, 530) != g.end());
-		CHECK(g.find(99, 99, 1314) != g.end());
+		// check edges
+		CHECK(g.find(99, 2, 100) != g.end());
+		CHECK(g.find(2, 99, 200) != g.end());
+		CHECK(g.find(99, 99, 50) != g.end());
+		CHECK(g.find(99, 99, 200) != g.end());
 	}
 
-	SECTION("new_data already exist") {
-		CHECK_FALSE(g.replace_node(1, 2));
+	// replace success
+	CHECK(g.replace_node(1, 99));
 
-		CHECK(g.is_node(1));
-		CHECK(g.is_node(2));
-	}
+	CHECK(g.is_node(99));
+	CHECK_FALSE(g.is_node(1));
 
-	SECTION("Exception: is_node(old_data) == false") {
-		// src, dst not exist
-		CHECK_THROWS_MATCHES(g.replace_node(77, 88),
-		                     std::runtime_error,
-		                     Catch::Matchers::Message("Cannot call gdwg::graph<N, E>::replace_node "
-		                                              "on a node that doesn't exist"));
+	// replace node already exist
+	CHECK_FALSE(g.replace_node(1, 2));
 
-		// src not exist, dst exist
-		CHECK_THROWS_MATCHES(g.replace_node(77, 2),
-		                     std::runtime_error,
-		                     Catch::Matchers::Message("Cannot call gdwg::graph<N, E>::replace_node "
-		                                              "on a node that doesn't exist"));
-	}
+	CHECK(g.is_node(1));
+	CHECK(g.is_node(2));
+
+	// no src, with dst
+	CHECK_THROWS(g.replace_node(66, 2));
+	// no src no dst
+	CHECK_THROWS(g.replace_node(44, 55));
+
 }
 
 
